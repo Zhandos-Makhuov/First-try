@@ -73,6 +73,13 @@
     min-width: 52px; height: 38px; border-radius: 999px; font-weight: 800; font-size: 15px; color: var(--ink-soft);
     transition: background .2s, color .2s;
   }
+  .top-right { display: flex; align-items: center; gap: 8px; flex: none; }
+  .snd {
+    width: 46px; height: 46px; border-radius: 50%; background: #fff7ef; border: 1.5px solid var(--line);
+    display: grid; place-items: center; font-size: 20px; transition: transform .15s;
+  }
+  .snd:active { transform: scale(.9); }
+  .snd.off { opacity: .55; }
   .lang button.on { background: var(--accent); color: #fff; }
 
   .screen { display: none; flex: 1; flex-direction: column; animation: fadeUp .45s ease; }
@@ -346,9 +353,12 @@
 <div class="app">
   <header class="topbar">
     <div class="brand"><svg><use href="#heart" fill="url(#hg)"/></svg><span data-i18n="brand"></span></div>
-    <div class="lang" role="group" aria-label="Language">
-      <button type="button" data-lang="ru">RU</button>
-      <button type="button" data-lang="kk">ҚАЗ</button>
+    <div class="top-right">
+      <button class="snd" id="btnSound" type="button" aria-label="Sound">🔊</button>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="ru">RU</button>
+        <button type="button" data-lang="kk">ҚАЗ</button>
+      </div>
     </div>
   </header>
 
@@ -988,6 +998,120 @@ const store = {
   del(k)    { try { localStorage.removeItem(k); } catch (e) {} }
 };
 
+/* =====================================================================
+   SOUNDS (Web Audio — синтез, без файлов)
+   ===================================================================== */
+const Sound = {
+  ctx: null,
+  on: store.get('dg.sound', true),
+  init() {
+    if (!this.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      this.ctx = new AC();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.9;
+      this.master.connect(this.ctx.destination);
+    }
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+  },
+  tone(freq, at, dur, o = {}) {
+    const c = this.ctx, t = c.currentTime + at;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(freq, t);
+    if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+    const v = o.vol || 0.18;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(v, t + (o.attack || 0.01));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(g); g.connect(this.master);
+    osc.start(t); osc.stop(t + dur + 0.05);
+  },
+  bell(freq, at, dur, vol) {
+    this.tone(freq, at, dur, { vol: vol });
+    this.tone(freq * 2, at, dur * 0.6, { vol: vol * 0.25 });
+    this.tone(freq * 3.01, at, dur * 0.3, { vol: vol * 0.08 });
+  },
+  whoosh(at, dur, from, to, vol) {
+    const c = this.ctx, t = c.currentTime + at;
+    const len = Math.floor(c.sampleRate * dur);
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = c.createBufferSource(); src.buffer = buf;
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.2;
+    f.frequency.setValueAtTime(from, t);
+    f.frequency.exponentialRampToValueAtTime(to, t + dur);
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + dur * 0.35);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f); f.connect(g); g.connect(this.master);
+    src.start(t); src.stop(t + dur);
+  },
+  buzz(ms) { if (this.on && navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) {} } },
+  play(name) {
+    if (!this.on) return;
+    this.init();
+    if (!this.ctx) return;
+    switch (name) {
+      case 'tap':
+        this.tone(740, 0, 0.07, { type: 'triangle', vol: 0.07 });
+        break;
+      case 'flip':
+        this.whoosh(0, 0.32, 600, 3200, 0.22);
+        this.bell(880, 0.22, 0.4, 0.09);
+        break;
+      case 'flipBack':
+        this.whoosh(0, 0.28, 2800, 500, 0.16);
+        break;
+      case 'task':
+        this.whoosh(0, 0.3, 600, 3200, 0.2);
+        [1047, 1319, 1568, 2093].forEach((f, i) => this.bell(f, 0.2 + i * 0.07, 0.45, 0.08));
+        break;
+      case 'deal':
+        this.whoosh(0, 0.22, 1800, 700, 0.12);
+        break;
+      case 'done':
+        this.bell(784, 0, 0.5, 0.14);
+        this.bell(1175, 0.11, 0.7, 0.14);
+        this.buzz(25);
+        break;
+      case 'skip':
+        this.tone(520, 0, 0.28, { type: 'triangle', to: 230, vol: 0.13 });
+        this.tone(390, 0.12, 0.25, { type: 'triangle', to: 180, vol: 0.08 });
+        this.buzz([20, 40, 20]);
+        break;
+      case 'favOn':
+        this.tone(600, 0, 0.14, { to: 1300, vol: 0.12 });
+        this.bell(1568, 0.1, 0.35, 0.07);
+        break;
+      case 'favOff':
+        this.tone(900, 0, 0.16, { to: 450, vol: 0.09 });
+        break;
+      case 'error':
+        this.tone(180, 0, 0.18, { type: 'square', vol: 0.05 });
+        this.tone(150, 0.12, 0.2, { type: 'square', vol: 0.05 });
+        this.buzz(60);
+        break;
+      case 'add':
+        this.bell(988, 0, 0.3, 0.1);
+        this.bell(1319, 0.08, 0.45, 0.1);
+        break;
+      case 'finish':
+        [523, 659, 784, 1047].forEach((f, i) => this.bell(f, i * 0.16, 0.9, 0.13));
+        [523, 659, 784].forEach(f => this.bell(f, 0.75, 1.6, 0.07));
+        this.bell(1568, 0.95, 1.2, 0.06);
+        this.buzz([30, 60, 30, 60, 60]);
+        break;
+      case 'message':
+        [1319, 1047, 1568].forEach((f, i) => this.bell(f, i * 0.09, 0.5, 0.08));
+        break;
+    }
+  }
+};
+
 let lang   = store.get('dg.lang', 'ru');
 let favs   = store.get('dg.favs', []);
 let custom = store.get('dg.custom', []);
@@ -1136,7 +1260,7 @@ function startGame() {
     el.classList.remove('error');
     if (!v) { void el.offsetWidth; el.classList.add('error'); ok = false; }
   });
-  if (!ok) { toast(t('needNames')); return; }
+  if (!ok) { Sound.play('error'); toast(t('needNames')); return; }
   store.set('dg.names', [n1, n2]);
   S = {
     names: [n1, n2], skips: [3, 3], turn: Math.random() < .5 ? 0 : 1,
@@ -1283,6 +1407,8 @@ function doneCount() { return S.answered + S.tasksDone; }
 function flip() {
   if (!S || !S.current || S.current.empty) return;
   S.flipped = !S.flipped;
+  const it = getItem(S.current.id);
+  Sound.play(S.flipped ? (it && it.cat === 'task' ? 'task' : 'flip') : 'flipBack');
   saveState();
   renderGame(false);
 }
@@ -1294,6 +1420,7 @@ $('#card').addEventListener('keydown', e => {
 
 let dealing = false;
 function dealIn() {
+  Sound.play('deal');
   const w = $('#cardWrap');
   w.classList.remove('in'); void w.offsetWidth; w.classList.add('in');
   setTimeout(() => w.classList.remove('in'), 520);
@@ -1319,6 +1446,7 @@ $('#btnDone').onclick = () => {
   if (!item) return;
   S.used.push(item.id);
   if (item.cat === 'task') S.tasksDone++; else S.answered++;
+  Sound.play('done');
   S.opened++;
   S.turn = 1 - S.turn;
   saveState();
@@ -1334,6 +1462,7 @@ $('#btnSkip').onclick = () => {
   const item = getItem(S.current.id);
   if (!item) return;
   S.skips[S.turn]--;
+  Sound.play('skip');
   S.used.push(item.id);
   S.opened++;
   toast(t('skipUsed', { name: S.names[S.turn] }));
@@ -1372,8 +1501,8 @@ $('#favBtn').addEventListener('click', e => {
 });
 
 function toggleFav(id) {
-  if (favs.includes(id)) { favs = favs.filter(x => x !== id); toast(t('favRemoved')); }
-  else { favs.unshift(id); toast(t('favAdded')); }
+  if (favs.includes(id)) { favs = favs.filter(x => x !== id); Sound.play('favOff'); toast(t('favRemoved')); }
+  else { favs.unshift(id); Sound.play('favOn'); toast(t('favAdded')); }
   store.set('dg.favs', favs);
   updateCounts();
   if (S && !S.finished) $('#favBtn').classList.toggle('on', S.current && favs.includes(S.current.id));
@@ -1411,7 +1540,7 @@ function renderEnd(celebrate) {
   $('#stQ').textContent = S.answered;
   $('#stT').textContent = S.tasksDone;
   $('#stF').textContent = favs.filter(id => getItem(id)).length;
-  if (celebrate) hearts();
+  if (celebrate) { hearts(); Sound.play('finish'); }
 }
 function hearts() {
   const box = $('#floating');
@@ -1432,6 +1561,7 @@ $('#btnAnother').onclick = () => {
   S.msg = randomMsg();
   saveState();
   renderEnd(false);
+  Sound.play('message');
   const m = $('#message');
   m.classList.remove('swap'); void m.offsetWidth; m.classList.add('swap');
 };
@@ -1521,11 +1651,12 @@ function afterCustomChange() {
 $('#btnAddCustom').onclick = () => {
   const ta = $('#customText');
   const text = ta.value.trim().replace(/\s+/g, ' ');
-  if (!text) { ta.classList.remove('error'); void ta.offsetWidth; ta.classList.add('error'); ta.focus(); return; }
+  if (!text) { Sound.play('error'); ta.classList.remove('error'); void ta.offsetWidth; ta.classList.add('error'); ta.focus(); return; }
   custom.push({ id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), text, cat: customCat });
   store.set('dg.custom', custom);
   ta.value = '';
   ta.classList.remove('error');
+  Sound.play('add');
   toast(t('added'));
   afterCustomChange();
 };
@@ -1539,7 +1670,24 @@ $$('.lang button').forEach(b => b.addEventListener('click', () => {
   renderAll();
 }));
 
+document.addEventListener('click', e => {
+  if (e.target.closest('.chip, .level, .len, .tool, .lang button, .x, #btnStart, #btnResume, #btnNew, #btnFinish, [data-open], #dialogNo, #dialogYes, .icon-btn:not(.heart)')) Sound.play('tap');
+}, true);
+
+function renderSoundBtn() {
+  const b = $('#btnSound');
+  b.textContent = Sound.on ? '🔊' : '🔇';
+  b.classList.toggle('off', !Sound.on);
+}
+$('#btnSound').addEventListener('click', () => {
+  Sound.on = !Sound.on;
+  store.set('dg.sound', Sound.on);
+  renderSoundBtn();
+  Sound.play('tap');
+});
+
 (function init() {
+  renderSoundBtn();
   const names = store.get('dg.names', null);
   if (names) { $('#name1').value = names[0] || ''; $('#name2').value = names[1] || ''; }
   if (S) { setupLevel = S.level || 'all'; if (!S.limit) S.limit = 300; }
