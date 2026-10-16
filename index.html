@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6e3d4">
+<title>Вопросы для двоих</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf1e7;
+    --bg2: #f6dccb;
+    --ink: #3d2621;
+    --ink-soft: #7a5a50;
+    --muted: #a8877b;
+    --card: #fffaf4;
+    --line: #ecd5c4;
+    --accent: #c9524a;
+    --accent-dark: #a63d37;
+    --accent-soft: #f7d9d2;
+    --gold: #d9a441;
+    --warm: #e58a4e;
+    --deep: #7f5a9c;
+    --us: #d2506b;
+    --task: #c48a1c;
+    --shadow: 0 18px 40px -18px rgba(120, 50, 30, .45);
+    --radius: 22px;
+    --serif: "Lora", Georgia, "Times New Roman", serif;
+    --sans: "Nunito", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  [hidden] { display: none !important; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 0%, #ffe6d3 0, transparent 45%),
+      radial-gradient(circle at 100% 30%, #f9d6d0 0, transparent 40%),
+      radial-gradient(circle at 0% 100%, #f8e2c8 0, transparent 45%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-size: 18px;
+    line-height: 1.4;
+    overflow-x: hidden;
+  }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 0; background: none; }
+
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px);
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; }
+  .brand span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand { min-width: 0; display: flex; align-items: center; gap: 8px; font-family: var(--serif); font-weight: 600; font-size: 18px; color: var(--accent-dark); }
+  .brand svg { width: 26px; height: 26px; flex: none; }
+  .lang {
+    display: inline-flex; background: #fff7ef; border: 1.5px solid var(--line); border-radius: 999px; padding: 3px;
+  }
+  .lang button {
+    min-width: 52px; height: 38px; border-radius: 999px; font-weight: 800; font-size: 15px; color: var(--ink-soft);
+    transition: background .2s, color .2s;
+  }
+  .top-right { display: flex; align-items: center; gap: 8px; flex: none; }
+  .snd {
+    width: 46px; height: 46px; border-radius: 50%; background: #fff7ef; border: 1.5px solid var(--line);
+    display: grid; place-items: center; font-size: 20px; transition: transform .15s;
+  }
+  .snd:active { transform: scale(.9); }
+  .snd.off { opacity: .55; }
+  .lang button.on { background: var(--accent); color: #fff; }
+
+  .screen { display: none; flex: 1; flex-direction: column; animation: fadeUp .45s ease; }
+  .screen.active { display: flex; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Setup ---------- */
+  .hero { text-align: center; padding: 18px 4px 8px; }
+  .hero-heart { width: 74px; height: 74px; margin: 0 auto 6px; animation: beat 2.4s ease-in-out infinite; }
+  @keyframes beat { 0%, 100% { transform: scale(1); } 12% { transform: scale(1.1); } 24% { transform: scale(1); } 36% { transform: scale(1.07); } }
+  h1 { font-family: var(--serif); font-size: 34px; line-height: 1.12; margin: 0 0 8px; color: var(--ink); }
+  .sub { color: var(--ink-soft); margin: 0 auto; max-width: 340px; font-size: 17px; }
+
+  .block { background: rgba(255, 250, 244, .85); border: 1.5px solid var(--line); border-radius: var(--radius); padding: 16px; margin-top: 16px; box-shadow: 0 8px 24px -16px rgba(120, 50, 30, .35); }
+  .block h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 12px; font-weight: 800; }
+
+  .names { display: grid; gap: 10px; }
+  .names .amp { text-align: center; font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 22px; line-height: 1; }
+  .field {
+    width: 100%; height: 58px; border-radius: 16px; border: 2px solid var(--line); background: #fff;
+    padding: 0 18px; font-size: 20px; font-weight: 700; outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  .field:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .field.error { border-color: var(--accent); animation: shake .4s; }
+  @keyframes shake { 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-3px); } }
+
+  .levels { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .level {
+    text-align: left; border: 2px solid var(--line); background: #fff; border-radius: 18px; padding: 12px 14px; min-height: 84px;
+    display: flex; flex-direction: column; gap: 2px; transition: transform .15s, border-color .2s, background .2s;
+  }
+  .level:active { transform: scale(.97); }
+  .level .em { font-size: 24px; line-height: 1.1; }
+  .level b { font-size: 17px; }
+  .level small { color: var(--ink-soft); font-size: 14px; line-height: 1.25; }
+  .level.on { border-color: var(--c, var(--accent)); background: color-mix(in srgb, var(--c, var(--accent)) 10%, #fff); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c, var(--accent)) 18%, transparent); }
+
+  .switch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; font-weight: 700; color: var(--ink-soft); font-size: 16px; }
+  .switch { position: relative; width: 58px; height: 34px; flex: none; }
+  .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .switch span { position: absolute; inset: 0; background: var(--line); border-radius: 999px; transition: background .2s; }
+  .switch span::after { content: ""; position: absolute; width: 26px; height: 26px; left: 4px; top: 4px; background: #fff; border-radius: 50%; transition: transform .2s; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  .switch input:checked + span { background: var(--accent); }
+  .switch input:checked + span::after { transform: translateX(24px); }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 60px; border-radius: 18px;
+    font-weight: 800; font-size: 19px; padding: 0 18px; transition: transform .12s, box-shadow .2s, opacity .2s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: linear-gradient(135deg, #d9645a, var(--accent-dark)); color: #fff; box-shadow: 0 12px 24px -12px rgba(166, 61, 55, .8); }
+  .btn-soft { background: #fff; border: 2px solid var(--line); color: var(--ink); }
+  .btn-ghost { color: var(--ink-soft); min-height: 52px; font-size: 17px; }
+  .btn[disabled] { opacity: .45; pointer-events: none; }
+  .btn .count { background: var(--accent-soft); color: var(--accent-dark); border-radius: 999px; font-size: 14px; padding: 2px 9px; }
+  .stack { display: grid; gap: 10px; margin-top: 18px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* ---------- Game ---------- */
+  .players { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  .player {
+    border-radius: 18px; padding: 10px 12px; background: rgba(255,255,255,.6); border: 2px solid var(--line);
+    transition: all .35s ease; position: relative; min-width: 0;
+  }
+  .player .pname { font-weight: 800; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .player .pskips { display: flex; align-items: center; gap: 5px; margin-top: 4px; font-size: 13px; color: var(--muted); font-weight: 700; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); transition: background .3s, transform .3s; }
+  .dot.used { background: var(--line); transform: scale(.8); }
+  .player.active { background: #fff; border-color: var(--accent); box-shadow: 0 10px 22px -14px rgba(166,61,55,.9); transform: translateY(-2px); }
+  .player.active::before {
+    content: ""; position: absolute; top: -6px; right: 12px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft); animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 9px rgba(247, 217, 210, 0); } }
+
+  .turn { text-align: center; margin: 14px 0 6px; }
+  .turn small { display: block; color: var(--muted); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; font-size: 13px; }
+  .turn strong { font-family: var(--serif); font-size: 28px; color: var(--accent-dark); line-height: 1.15; display: block; word-break: break-word; }
+
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: none; margin: 0 -2px; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none; height: 40px; padding: 0 14px; border-radius: 999px; border: 2px solid var(--line); background: rgba(255,255,255,.7);
+    font-weight: 700; font-size: 15px; color: var(--ink-soft); white-space: nowrap;
+  }
+  .chip.on { background: var(--c, var(--accent)); border-color: var(--c, var(--accent)); color: #fff; }
+
+  .card-area { flex: 1; display: flex; align-items: center; justify-content: center; padding: 6px 0 12px; min-height: 320px; }
+  .card-wrap { width: 100%; max-width: 420px; height: clamp(300px, 48dvh, 500px); perspective: 1400px; }
+  .card-wrap.out { animation: dealOut .32s ease-in forwards; }
+  .card-wrap.in { animation: dealIn .5s cubic-bezier(.2, .9, .25, 1.1); }
+  @keyframes dealOut { to { transform: translateX(-125%) rotate(-14deg); opacity: 0; } }
+  @keyframes dealIn { from { transform: translateY(50px) scale(.9) rotate(3deg); opacity: 0; } }
+
+  .card {
+    position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+    transition: transform .75s cubic-bezier(.45, .05, .2, 1.15); cursor: pointer; outline: none;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+  .card.notrans { transition: none !important; }
+  .face {
+    position: absolute; inset: 0; border-radius: 28px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .back {
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,255,255,.22) 0, transparent 40%),
+      linear-gradient(150deg, #e0776a 0%, #c44d4f 50%, #8f3446 100%);
+    color: #fff; display: flex; align-items: center; justify-content: center; text-align: center; padding: 26px;
+  }
+  .back::before {
+    content: ""; position: absolute; inset: 14px; border: 2px dashed rgba(255,255,255,.4); border-radius: 20px;
+  }
+  .back-pattern { position: absolute; inset: 0; opacity: .12; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M12 20s-7-4.4-7-9.6C5 7.9 6.9 6 9.2 6c1.3 0 2.3.6 2.8 1.5C12.5 6.6 13.5 6 14.8 6 17.1 6 19 7.9 19 10.4 19 15.6 12 20 12 20z'/%3E%3C/svg%3E"); background-size: 44px; }
+  .back-inner { position: relative; }
+  .back-heart { width: 86px; height: 86px; margin: 0 auto 14px; filter: drop-shadow(0 6px 12px rgba(0,0,0,.2)); animation: beat 2.4s ease-in-out infinite; }
+  .back-name { font-family: var(--serif); font-size: 28px; font-weight: 700; line-height: 1.2; word-break: break-word; }
+  .back-hint { margin-top: 12px; font-weight: 700; opacity: .85; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; }
+  .back-hint::before { content: "👆"; animation: tap 1.6s ease-in-out infinite; display: inline-block; }
+  @keyframes tap { 50% { transform: translateY(-4px); } }
+
+  .front {
+    transform: rotateY(180deg); background: var(--card); display: flex; flex-direction: column; padding: 22px 22px 18px;
+    border: 2px solid color-mix(in srgb, var(--c) 30%, #fff);
+  }
+  .front::after {
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 8px; background: var(--c);
+  }
+  .card[data-cat="warm"] { --c: var(--warm); }
+  .card[data-cat="deep"] { --c: var(--deep); }
+  .card[data-cat="us"] { --c: var(--us); }
+  .card[data-cat="task"] { --c: var(--task); }
+  .card[data-cat="empty"] { --c: var(--muted); }
+  .card[data-cat="task"] .front { background: linear-gradient(170deg, #fff8e6, #fff2d6); }
+  .front-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 14px;
+    background: color-mix(in srgb, var(--c) 14%, #fff); color: color-mix(in srgb, var(--c) 80%, #000);
+  }
+  .num { font-weight: 800; color: var(--muted); font-size: 14px; }
+  .q-text {
+    flex: 1; display: flex; align-items: center; justify-content: center; text-align: center;
+    font-family: var(--serif); font-weight: 600; font-size: clamp(22px, 6.4vw, 29px); line-height: 1.32; padding: 12px 4px;
+    overflow-y: auto; word-break: break-word;
+  }
+  .q-text.small { font-size: clamp(19px, 5.4vw, 24px); }
+  .front-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .for-who { font-weight: 700; color: var(--ink-soft); font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fav-btn {
+    width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; flex: none;
+    background: #fff; border: 2px solid var(--line); transition: transform .15s, background .2s, border-color .2s;
+  }
+  .fav-btn svg { width: 28px; height: 28px; transition: transform .3s; }
+  .fav-btn svg path { fill: transparent; stroke: var(--us); stroke-width: 2; transition: fill .2s; }
+  .fav-btn.on { background: #fde8ec; border-color: #f4b8c4; }
+  .fav-btn.on svg path { fill: var(--us); }
+  .fav-btn.pop svg { animation: pop .45s ease; }
+  @keyframes pop { 40% { transform: scale(1.45); } 70% { transform: scale(.9); } }
+
+  .pbar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; margin-top: 6px; }
+  .pbar-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #e58a4e, var(--accent)); transition: width .5s ease; }
+  .back-last { display: inline-block; margin-bottom: 12px; background: rgba(255,255,255,.95); color: var(--accent-dark); font-weight: 800; font-size: 15px; padding: 6px 14px; border-radius: 999px; }
+  .lens { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .len { border: 2px solid var(--line); background: #fff; border-radius: 16px; padding: 10px 4px; min-height: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .len b { font-family: var(--serif); font-size: 24px; line-height: 1.1; }
+  .len small { color: var(--ink-soft); font-size: 12.5px; font-weight: 700; text-align: center; line-height: 1.2; }
+  .len.on { border-color: var(--accent); background: #fbeae6; box-shadow: 0 0 0 3px var(--accent-soft); }
+  .len-note { color: var(--ink-soft); font-size: 15px; margin: 10px 2px 0; }
+  .actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; transition: opacity .25s; }
+  .actions.locked { opacity: .4; pointer-events: none; }
+  .actions.hidden { display: none; }
+  .btn-skip { background: #fff; border: 2px solid var(--line); color: var(--ink-soft); font-size: 17px; flex-direction: column; gap: 0; line-height: 1.15; }
+  .btn-skip small { font-size: 13px; color: var(--muted); font-weight: 700; }
+  .hint { text-align: center; color: var(--muted); font-weight: 700; font-size: 15px; min-height: 22px; margin-bottom: 8px; }
+
+  .toolbar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+  .tool {
+    min-height: 58px; border-radius: 16px; background: rgba(255,255,255,.6); border: 1.5px solid var(--line);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 13px; font-weight: 800; color: var(--ink-soft);
+  }
+  .tool span.ic { font-size: 20px; line-height: 1; }
+  .progress { text-align: center; color: var(--muted); font-size: 14px; font-weight: 700; margin-top: 10px; }
+
+  /* ---------- End ---------- */
+  .end { text-align: center; padding-top: 10px; position: relative; }
+  .end h1 { font-size: 32px; margin-top: 6px; }
+  .end .couple { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 22px; word-break: break-word; }
+  .message {
+    margin-top: 20px; background: var(--card); border-radius: 28px; padding: 44px 22px 26px; box-shadow: var(--shadow); position: relative;
+    border: 2px solid #f1d2c4;
+  }
+  .message::before { content: "“"; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #fff; font-family: var(--serif); font-size: 46px; line-height: 64px; }
+  .message small { display: block; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-size: 13px; margin-bottom: 12px; }
+  .message p { font-family: var(--serif); font-size: clamp(21px, 5.8vw, 25px); line-height: 1.42; margin: 0; font-weight: 500; }
+  .message .author { display: block; margin-top: 14px; color: var(--accent-dark); font-weight: 700; font-family: var(--sans); font-size: 16px; }
+  .message.swap { animation: fadeUp .45s ease; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
+  .stat { text-align: center; background: rgba(255,255,255,.7); border: 1.5px solid var(--line); border-radius: 18px; padding: 12px 6px; }
+  .stat b { display: block; font-family: var(--serif); font-size: 30px; color: var(--accent-dark); line-height: 1.1; }
+  .stat span { font-size: 13px; color: var(--ink-soft); font-weight: 700; }
+  .floating { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .floating i { position: absolute; bottom: -40px; font-style: normal; animation: rise linear forwards; opacity: .8; }
+  @keyframes rise { to { transform: translateY(-110vh) rotate(25deg); opacity: 0; } }
+  #screen-end > * { position: relative; z-index: 1; }
+
+  /* ---------- Sheets ---------- */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(61, 38, 33, .45); z-index: 50; display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    width: 100%; max-width: 480px; max-height: 88dvh; background: var(--bg); border-radius: 28px 28px 0 0; display: flex; flex-direction: column;
+    transform: translateY(100%); transition: transform .35s cubic-bezier(.2, .9, .3, 1); padding-bottom: env(safe-area-inset-bottom);
+  }
+  .overlay.open .sheet { transform: none; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 16px 10px; gap: 10px; }
+  .sheet-head h3 { margin: 0; font-family: var(--serif); font-size: 24px; }
+  .x { width: 48px; height: 48px; border-radius: 50%; background: #fff; border: 1.5px solid var(--line); font-size: 24px; line-height: 1; color: var(--ink-soft); flex: none; }
+  .sheet-body { overflow-y: auto; padding: 4px 16px 20px; -webkit-overflow-scrolling: touch; }
+  .sheet-hint { color: var(--ink-soft); font-size: 15px; margin: 0 0 12px; }
+  .list { display: grid; gap: 10px; }
+  .item { background: #fff; border: 1.5px solid var(--line); border-radius: 18px; padding: 14px 12px 14px 16px; display: flex; gap: 10px; align-items: flex-start; }
+  .item .txt { flex: 1; min-width: 0; }
+  .item .txt p { margin: 6px 0 0; font-family: var(--serif); font-size: 18px; line-height: 1.38; word-break: break-word; }
+  .item .tag { font-size: 12px; padding: 4px 10px; }
+  .item[data-cat="warm"] { --c: var(--warm); }
+  .item[data-cat="deep"] { --c: var(--deep); }
+  .item[data-cat="us"] { --c: var(--us); }
+  .item[data-cat="task"] { --c: var(--task); }
+  .icon-btn { width: 46px; height: 46px; border-radius: 50%; flex: none; display: grid; place-items: center; background: #fdf3ee; font-size: 20px; color: var(--ink-soft); }
+  .icon-btn.heart { color: var(--us); font-size: 22px; background: #fde8ec; }
+  .empty { text-align: center; color: var(--muted); padding: 30px 10px; font-weight: 700; }
+  textarea.field { height: auto; min-height: 100px; padding: 14px 16px; font-size: 18px; font-weight: 600; resize: vertical; line-height: 1.35; }
+  .cat-pick { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+  .cat-pick .chip { flex: 1; min-width: 90px; height: 46px; }
+
+  .dialog {
+    position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 24px;
+    background: rgba(61, 38, 33, .45); opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  .dialog.open { opacity: 1; pointer-events: auto; }
+  .dialog-box { background: var(--bg); border-radius: 26px; padding: 24px 18px 18px; width: 100%; max-width: 360px; text-align: center; transform: scale(.92); transition: transform .25s; }
+  .dialog.open .dialog-box { transform: none; }
+  .dialog-box p { font-family: var(--serif); font-size: 22px; margin: 0 0 18px; line-height: 1.3; }
+
+  .toast {
+    position: fixed; left: 50%; top: calc(env(safe-area-inset-top) + 14px); transform: translate(-50%, -30px); opacity: 0;
+    background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 999px; font-weight: 700; font-size: 16px; z-index: 70;
+    transition: all .3s; pointer-events: none; max-width: calc(100% - 32px); text-align: center;
+  }
+  .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+  @media (min-height: 800px) { .turn { margin-top: 20px; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ee8a7c"/><stop offset="1" stop-color="#b8394a"/>
+    </linearGradient>
+    <symbol id="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.7-9.4-9.6C1.4 8.2 3.4 4.5 7 4.5c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.6 0 5.6 3.7 4.4 6.9C19.5 16.3 12 21 12 21z"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><svg><use href="#heart" fill="url(#hg)"/></svg><span data-i18n="brand"></span></div>
+    <div class="top-right">
+      <button class="snd" id="btnSound" type="button" aria-label="Sound">🔊</button>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="ru">RU</button>
+        <button type="button" data-lang="kk">ҚАЗ</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SETUP -->
+  <section class="screen" id="screen-setup">
+    <div class="hero">
+      <svg class="hero-heart"><use href="#heart" fill="url(#hg)"/></svg>
+      <h1 data-i18n="appTitle"></h1>
+      <p class="sub" data-i18n="appSub"></p>
+    </div>
+
+    <div class="block">
+      <h2 data-i18n="namesTitle"></h2>
+      <div class="names">
+        <input class="field" id="name1" maxlength="20" autocomplete="off" data-i18n-ph="name1">
+        <div class="amp">&amp;</div>
+        <input class="field" id="name2" maxlength="20" autocomplete="off" data-i18n-ph="name2">
+      </div>
+    </div>
+
+    <div class="block">
+      <h2 data-i18n="levelTitle"></h2>
+      <div class="levels" id="setupLevels"></div>
+      <label class="switch-row">
+        <span data-i18n="tasksToggle"></span>
+        <span class="switch"><input type="checkbox" id="tasksOn" checked><span></span></span>
+      </label>
+    </div>
+
+    <div class="block">
+      <h2 data-i18n="lengthTitle"></h2>
+      <div class="lens" id="setupLens"></div>
+      <p class="len-note" data-i18n="lengthNote"></p>
+    </div>
+
+    <div class="stack">
+      <button class="btn btn-primary" id="btnResume" type="button" hidden></button>
+      <button class="btn btn-primary" id="btnStart" type="button" data-i18n="start"></button>
+      <div class="row2">
+        <button class="btn btn-soft" type="button" data-open="custom"><span data-i18n="myQuestions"></span><span class="count" data-count="custom"></span></button>
+        <button class="btn btn-soft" type="button" data-open="fav"><span data-i18n="favorites"></span><span class="count" data-count="fav"></span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="screen-game">
+    <div class="pbar"><div class="pbar-fill" id="pbarFill"></div></div>
+    <div class="players" id="players"></div>
+    <div class="turn"><small id="turnLabel"></small><strong id="turnName"></strong></div>
+    <div class="chips" id="gameLevels"></div>
+
+    <div class="card-area">
+      <div class="card-wrap" id="cardWrap">
+        <div class="card" id="card" tabindex="0" role="button">
+          <div class="face back">
+            <div class="back-pattern"></div>
+            <div class="back-inner">
+              <div class="back-last" id="backLast" hidden></div>
+              <svg class="back-heart"><use href="#heart" fill="#fff"/></svg>
+              <div class="back-name" id="backName"></div>
+              <div class="back-hint" data-i18n="tapToFlip"></div>
+            </div>
+          </div>
+          <div class="face front">
+            <div class="front-top"><span class="tag" id="cardTag"></span><span class="num" id="cardNum"></span></div>
+            <div class="q-text" id="qText"></div>
+            <div class="front-bottom">
+              <span class="for-who" id="forWho"></span>
+              <button class="fav-btn" id="favBtn" type="button" aria-label="♥"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.7-9.4-9.6C1.4 8.2 3.4 4.5 7 4.5c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.6 0 5.6 3.7 4.4 6.9C19.5 16.3 12 21 12 21z"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hint" id="hint"></div>
+    <div class="actions" id="actions">
+      <button class="btn btn-skip" id="btnSkip" type="button"><span data-i18n="skip"></span><small id="skipLeft"></small></button>
+      <button class="btn btn-primary" id="btnDone" type="button"></button>
+    </div>
+
+    <div class="toolbar">
+      <button class="tool" type="button" data-open="fav"><span class="ic">♥</span><span data-i18n="favorites"></span></button>
+      <button class="tool" type="button" data-open="custom"><span class="ic">✎</span><span data-i18n="myQuestionsShort"></span></button>
+      <button class="tool" type="button" id="btnFinish"><span class="ic">✦</span><span data-i18n="finish"></span></button>
+    </div>
+    <div class="progress" id="progress"></div>
+  </section>
+
+  <!-- END -->
+  <section class="screen" id="screen-end">
+    <div class="floating" id="floating"></div>
+    <div class="end">
+      <svg class="hero-heart"><use href="#heart" fill="url(#hg)"/></svg>
+      <h1 data-i18n="endTitle"></h1>
+      <div class="couple" id="couple"></div>
+    </div>
+    <div class="message" id="message">
+      <small data-i18n="messageLabel"></small>
+      <p id="msgText"></p>
+      <span class="author" id="msgAuthor"></span>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="stQ">0</b><span data-i18n="stat_q"></span></div>
+      <div class="stat"><b id="stT">0</b><span data-i18n="stat_t"></span></div>
+      <div class="stat"><b id="stF">0</b><span data-i18n="stat_f"></span></div>
+    </div>
+    <div class="stack">
+      <button class="btn btn-soft" id="btnAnother" type="button" data-i18n="anotherMessage"></button>
+      <button class="btn btn-soft" type="button" data-open="fav"><span data-i18n="favorites"></span><span class="count" data-count="fav"></span></button>
+      <button class="btn btn-primary" id="btnNew" type="button" data-i18n="newGame"></button>
+    </div>
+  </section>
+</div>
+
+<!-- Favorites sheet -->
+<div class="overlay" id="sheet-fav">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="sheet-head"><h3 data-i18n="favorites"></h3><button class="x" type="button" data-close>×</button></div>
+    <div class="sheet-body"><div class="list" id="favList"></div></div>
+  </div>
+</div>
+
+<!-- Custom questions sheet -->
+<div class="overlay" id="sheet-custom">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="sheet-head"><h3 data-i18n="customTitle"></h3><button class="x" type="button" data-close>×</button></div>
+    <div class="sheet-body">
+      <p class="sheet-hint" data-i18n="customHint"></p>
+      <textarea class="field" id="customText" maxlength="240" data-i18n-ph="customPh"></textarea>
+      <div class="cat-pick" id="customCats"></div>
+      <button class="btn btn-primary" id="btnAddCustom" type="button" data-i18n="add"></button>
+      <div class="list" id="customList" style="margin-top:16px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm dialog -->
+<div class="dialog" id="dialog">
+  <div class="dialog-box">
+    <p id="dialogText"></p>
+    <div class="row2">
+      <button class="btn btn-soft" id="dialogNo" type="button" data-i18n="no"></button>
+      <button class="btn btn-primary" id="dialogYes" type="button" data-i18n="yes"></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   CONTENT
+   ===================================================================== */
+
+// [category, русский, қазақша]
+const QUESTIONS = [
+  // ---------- Разогрев / Жылыну (100) ----------
+  ['warm','Какую суперсилу ты бы выбрал(а) и что сделал(а) бы с ней в первый же день?','Қандай суперқабілетті таңдар едің және бірінші күні онымен не істер едің?'],
+  ['warm','Какая самая странная еда, которую ты пробовал(а)?','Сен татып көрген ең оғаш тағам қандай?'],
+  ['warm','Если бы ты был(а) животным, то каким и почему?','Егер жануар болсаң, қандай жануар болар едің және неге?'],
+  ['warm','Какую песню ты знаешь наизусть, хотя стесняешься в этом признаться?','Мойындауға ұялсаң да, қай әнді жатқа білесің?'],
+  ['warm','Какой у тебя самый бесполезный талант?','Сенің ең пайдасыз талантың қандай?'],
+  ['warm','Если бы можно было неделю пожить в любой сказке или книге, какую бы ты выбрал(а)?','Бір апта кез келген ертегіде немесе кітапта өмір сүруге болса, қайсысын таңдар едің?'],
+  ['warm','Что бы ты сделал(а), если бы на один день стал(а) невидимкой?','Бір күнге көзге көрінбейтін болып қалсаң, не істер едің?'],
+  ['warm','Какое самое нелепое прозвище у тебя было?','Саған қойылған ең күлкілі лақап ат қандай болды?'],
+  ['warm','Сладкое или солёное? Утро или вечер? Объясни свой выбор.','Тәтті ме, тұзды ма? Таң ба, кеш пе? Таңдауыңды түсіндір.'],
+  ['warm','Какое приложение на телефоне ты открываешь чаще всего и почему?','Телефоныңда қай қосымшаны жиі ашасың және неге?'],
+  ['warm','Какая у тебя самая неловкая история из школы?','Мектептен қалған ең ыңғайсыз оқиғаң қандай?'],
+  ['warm','Если бы о твоей жизни написали книгу, как бы она называлась?','Өмірің туралы кітап жазылса, ол қалай аталар еді?'],
+  ['warm','Какое блюдо у тебя получается лучше всего?','Қай тағамды бәрінен жақсы дайындайсың?'],
+  ['warm','Что тебя гарантированно рассмешит, даже когда настроение плохое?','Көңіл-күйің жаман болса да, сені не міндетті түрде күлдіреді?'],
+  ['warm','Какую одну вещь ты бы взял(а) на необитаемый остров?','Иесіз аралға қандай бір затты алып кетер едің?'],
+  ['warm','Какой был твой самый смешной провал на кухне?','Асүйдегі ең күлкілі сәтсіздігің қандай болды?'],
+  ['warm','Если бы ты мог(ла) мгновенно освоить любой навык, что бы это было?','Кез келген дағдыны бір сәтте үйрене алсаң, ол не болар еді?'],
+  ['warm','Какая у тебя самая странная привычка?','Сенің ең оғаш әдетің қандай?'],
+  ['warm','Кем ты хотел(а) стать в 7 лет?','7 жасыңда кім болғың келді?'],
+  ['warm','Какой стикер или эмодзи лучше всего описывает твоё настроение сегодня?','Бүгінгі көңіл-күйіңді қай стикер немесе эмодзи жақсы сипаттайды?'],
+  ['warm','Если бы ты открыл(а) своё кафе, как бы оно называлось и что бы там подавали?','Өз кафеңді ашсаң, ол қалай аталар еді және онда не ұсынылар еді?'],
+  ['warm','Что ты обожаешь, но немного стесняешься об этом говорить?','Нені қатты жақсы көресің, бірақ ол туралы айтуға сәл ұяласың?'],
+  ['warm','С каким историческим человеком ты хотел(а) бы поговорить за чаем?','Қай тарихи тұлғамен шай үстінде сөйлескің келер еді?'],
+  ['warm','Если бы тебе вдруг подарили миллион, что бы ты сделал(а) первым делом?','Саған кенеттен миллион сыйласа, ең бірінші не істер едің?'],
+  ['warm','Какой самый странный сон тебе снился?','Көрген ең оғаш түсің қандай?'],
+  ['warm','Какая мелочь раздражает тебя больше всего?','Қай ұсақ-түйек сені ең қатты ашуландырады?'],
+  ['warm','Какой твой любимый способ ничего не делать?','Ештеңе істемеудің сүйікті тәсілің қандай?'],
+  ['warm','Если бы у твоей жизни был слоган, какой бы он был?','Өміріңнің ұраны болса, ол қандай болар еді?'],
+  ['warm','Какой наряд ты считаешь своим самым неудачным?','Қай киіміңді ең сәтсіз деп санайсың?'],
+  ['warm','Какое время года тебе ближе всего и почему?','Жылдың қай мезгілі саған ең жақын және неге?'],
+  ['warm','По характеру ты больше кот или собака?','Мінезің бойынша сен көбірек мысықсың ба, әлде итсің бе?'],
+  ['warm','В какой стране ты бы хотел(а) пожить один год?','Қай елде бір жыл тұрып көргің келеді?'],
+  ['warm','В какую детскую игру ты бы с удовольствием сыграл(а) прямо сейчас?','Қазір қай балалық ойынды қуана ойнар едің?'],
+  ['warm','Какой комплимент тебе запомнился больше всего?','Саған айтылған қай мақтау есіңде ерекше қалды?'],
+  ['warm','Какое любимое блюдо из детства тебе готовила мама или бабушка?','Балалық шағыңда анаң немесе әжең пісірген сүйікті тағамың қандай?'],
+  ['warm','Чай с молоком или без? И сколько пиал ты выпиваешь за раз?','Сүтті шай ма, сүтсіз бе? Бір отырғанда неше кесе ішесің?'],
+  ['warm','Бешбармак, плов или манты — что выберешь и почему?','Бешбармақ, палау әлде манты — қайсысын таңдайсың және неге?'],
+  ['warm','Какое самое смешное слово ты знаешь?','Сен білетін ең күлкілі сөз қандай?'],
+  ['warm','Если бы ты мог(ла) поговорить с любым животным, кого бы выбрал(а) и о чём спросил(а)?','Кез келген жануармен сөйлесе алсаң, қайсысын таңдап, одан не сұрар едің?'],
+  ['warm','Какой был твой первый телефон?','Алғашқы телефоның қандай болды?'],
+  ['warm','Ты больше утренний человек или вечерний?','Сен таңертеңгі адамсың ба, әлде кешкі адамсың ба?'],
+  ['warm','Что ты всегда носишь с собой?','Әрдайым өзіңмен бірге не алып жүресің?'],
+  ['warm','Где самое необычное место, в котором ты засыпал(а)?','Ұйықтап қалған ең ерекше жерің қайда?'],
+  ['warm','Какой предмет в школе ты любил(а), а какой терпеть не мог(ла)?','Мектепте қай пәнді жақсы көрдің, ал қайсысын ұнатпадың?'],
+  ['warm','Если бы ты был(а) блюдом, то каким?','Тағам болсаң, қандай тағам болар едің?'],
+  ['warm','Сколько баурсаков ты можешь съесть за один раз?','Бір отырғанда неше бауырсақ жей аласың?'],
+  ['warm','Какую суперспособность ты точно не хотел(а) бы иметь?','Қандай суперқабілеттің болғанын мүлде қаламас едің?'],
+  ['warm','Если бы ты придумал(а) новый праздник, как бы он назывался и как бы его отмечали?','Жаңа мереке ойлап тапсаң, ол қалай аталып, қалай тойланар еді?'],
+  ['warm','Какой у тебя любимый запах?','Сүйікті иісің қандай?'],
+  ['warm','Какое у тебя было самое странное хобби?','Ең оғаш хоббиің қандай болды?'],
+  ['warm','Горы или море — что тебе ближе?','Тау ма, теңіз бе — саған қайсысы жақын?'],
+  ['warm','Если бы тебе подарили дом в любой точке мира, где бы он был?','Әлемнің кез келген жерінен үй сыйласа, ол қай жерде болар еді?'],
+  ['warm','Какую вещь ты никак не можешь выбросить?','Қай затты ешбір лақтыра алмайсың?'],
+  ['warm','Что ты умеешь делать лучше всех в своей семье?','Отбасыңда бәрінен жақсы не істей аласың?'],
+  ['warm','Какое самое смешное недоразумение с тобой случалось?','Басыңнан өткен ең күлкілі түсінбестік қандай?'],
+  ['warm','Если бы ты на один день поменялся(ась) жизнью с кем-то из семьи, то с кем?','Бір күнге отбасыңдағы біреумен өмір алмастырсаң, кіммен алмастырар едің?'],
+  ['warm','Что ты закажешь в кафе, даже не глядя в меню?','Кафеде мәзірге қарамай не тапсырыс бересің?'],
+  ['warm','Какую твою детскую шалость до сих пор вспоминают родные?','Туыстарың әлі күнге дейін еске алатын балалық тентектігің қандай?'],
+  ['warm','Каким цветом ты бы описал(а) свой характер?','Мінезіңді қай түспен сипаттар едің?'],
+  ['warm','Ты умеешь хранить сюрпризы или сразу всё рассказываешь?','Тосынсыйды сақтай аласың ба, әлде бәрін бірден айтып қоясың ба?'],
+  ['warm','Какой самый смешной подарок ты получал(а)?','Алған ең күлкілі сыйлығың қандай?'],
+  ['warm','Если бы у тебя был робот-помощник, что бы он делал за тебя?','Жеке робот-көмекшің болса, ол сенің орныңа не істер еді?'],
+  ['warm','Какое твоё самое любимое место в родном городе?','Туған қалаңдағы ең сүйікті жерің қайсы?'],
+  ['warm','Какое безобидное животное тебя всё равно пугает?','Зиянсыз болса да, қай жануардан қорқасың?'],
+  ['warm','Что бы ты сделал(а), если бы на один день проснулся(ась) пятилетним ребёнком?','Бір күнге бес жасар бала болып оянсаң, не істер едің?'],
+  ['warm','Какой вид спорта ты бы хотел(а) освоить?','Қай спорт түрін меңгергің келеді?'],
+  ['warm','Какой самый вкусный завтрак в твоей жизни?','Өміріңдегі ең дәмді таңғы ас қандай болды?'],
+  ['warm','На какой вопрос тебе уже надоело отвечать?','Қай сұраққа жауап беруден әбден жалықтың?'],
+  ['warm','Ты больше любишь планировать или решать всё на ходу?','Жоспарлағанды ұнатасың ба, әлде бәрін жол-жөнекей шешкенді ме?'],
+  ['warm','Какое самое далёкое путешествие у тебя было?','Ең алыс сапарың қандай болды?'],
+  ['warm','Какое изобретение ты бы придумал(а), чтобы облегчить жизнь?','Өмірді жеңілдету үшін қандай өнертабыс ойлап табар едің?'],
+  ['warm','Какая погода твоя самая любимая?','Сүйікті ауа райың қандай?'],
+  ['warm','Что ты любил(а) есть в детстве, а сейчас даже смотреть не можешь?','Бала кезіңде жақсы көріп жеген, ал қазір қарағың келмейтін тағам қандай?'],
+  ['warm','Кто в твоей семье самый смешной?','Отбасыңда кім ең күлдіргі?'],
+  ['warm','Как ты любишь проводить дождливый день?','Жаңбырлы күнді қалай өткізгенді ұнатасың?'],
+  ['warm','Что бы ты выбрал(а): уметь летать или дышать под водой?','Не таңдар едің: ұшуды ма, әлде су астында тыныс алуды ма?'],
+  ['warm','Что ты всегда берёшь в дорогу?','Жолға әрқашан не аласың?'],
+  ['warm','Если бы день можно было поставить на паузу, что бы ты сделал(а)?','Күнді кідіртіп қоюға болса, не істер едің?'],
+  ['warm','Какое у тебя любимое число и почему?','Сүйікті санның қайсы және неге?'],
+  ['warm','Какой самый необычный вкус мороженого ты бы рискнул(а) попробовать?','Балмұздақтың қандай ерекше дәмін татып көруге батылың барар еді?'],
+  ['warm','Что тебя удивило, когда ты впервые оказался(ась) в новом городе?','Жаңа қалаға алғаш барғанда сені не таң қалдырды?'],
+  ['warm','Если бы пришлось всю жизнь есть одно блюдо, что бы ты выбрал(а)?','Өмір бойы бір ғана тағам жеуге тура келсе, қайсысын таңдар едің?'],
+  ['warm','Какое правило ты бы ввёл(а) для всего мира?','Бүкіл әлем үшін қандай ереже енгізер едің?'],
+  ['warm','Как бы ты назвал(а) своего кота или попугая?','Мысығыңды немесе тотықұсыңды қалай атар едің?'],
+  ['warm','Что ты делаешь, когда не можешь уснуть?','Ұйықтай алмағанда не істейсің?'],
+  ['warm','Какую профессию ты бы попробовал(а) на один день?','Бір күнге қай мамандықты байқап көрер едің?'],
+  ['warm','Какое у тебя самое смешное фото?','Ең күлкілі суретің қандай?'],
+  ['warm','Какие три вещи всегда поднимают тебе настроение?','Көңіл-күйіңді әрқашан көтеретін үш нәрсе қандай?'],
+  ['warm','Ты больше любишь давать советы или слушать?','Кеңес бергенді ұнатасың ба, әлде тыңдағанды ма?'],
+  ['warm','Какое блюдо, по-твоему, самое вкусное в мире?','Сенің ойыңша, әлемдегі ең дәмді тағам қайсы?'],
+  ['warm','Если бы ты был(а) героем сказки, то кем?','Ертегі кейіпкері болсаң, кім болар едің?'],
+  ['warm','Какой твой самый неудачный эксперимент с причёской или одеждой?','Шаш үлгісімен немесе киіммен жасаған ең сәтсіз тәжірибең қандай?'],
+  ['warm','Какой перекус ты считаешь идеальным?','Қандай жеңіл тамақты мінсіз деп санайсың?'],
+  ['warm','Ты лучше запоминаешь лица или имена?','Бет-әлпетті жақсы есте сақтайсың ба, әлде есімдерді ме?'],
+  ['warm','Какой самый весёлый момент был на тое, где ты гостил(а)?','Қонақ болған тойыңдағы ең көңілді сәт қандай болды?'],
+  ['warm','Что тебе нравится делать своими руками?','Өз қолыңмен не істегенді ұнатасың?'],
+  ['warm','Если бы у тебя каждый день было 2 лишних часа, на что бы ты их тратил(а)?','Күн сайын қосымша 2 сағатың болса, оны неге жұмсар едің?'],
+  ['warm','Какая самая полезная покупка за последнее время?','Соңғы кездегі ең пайдалы сатып алған затың қандай?'],
+  ['warm','Какой звук тебя успокаивает?','Қай дыбыс сені тыныштандырады?'],
+  ['warm','Что бы ты написал(а) на своей футболке?','Футболкаңа не деп жазар едің?'],
+
+  // ---------- Поглубже / Тереңірек (100) ----------
+  ['deep','О чём ты больше всего мечтал(а) в детстве?','Балалық шағыңда ең көп нені армандадың?'],
+  ['deep','Какое твоё самое тёплое воспоминание из детства?','Балалық шағыңнан қалған ең жылы естелігің қандай?'],
+  ['deep','Кто из взрослых сильнее всего повлиял на тебя в детстве?','Бала кезіңде саған ересектердің қайсысы көбірек әсер етті?'],
+  ['deep','Чем ты гордишься больше всего в своей жизни?','Өміріңде ең көп нені мақтан тұтасың?'],
+  ['deep','Какие три ценности для тебя самые важные?','Сен үшін ең маңызды үш құндылық қандай?'],
+  ['deep','Чего ты боишься, но мало кому об этом рассказываешь?','Неден қорқасың, бірақ бұл туралы ешкімге айта бермейсің?'],
+  ['deep','Какой совет ты бы дал(а) себе в десять лет?','Он жасар өзіңе қандай кеңес берер едің?'],
+  ['deep','Что для тебя значит счастье?','Сен үшін бақыт деген не?'],
+  ['deep','Какой момент в своей жизни ты считаешь поворотным?','Өміріңдегі қай сәтті бетбұрыс деп санайсың?'],
+  ['deep','Что бы ты попробовал(а), если бы точно знал(а), что не потерпишь неудачу?','Сәтсіздікке ұшырамайтыныңды нақты білсең, нені байқап көрер едің?'],
+  ['deep','Какая книга, история или песня изменила твой взгляд на мир?','Қай кітап, оқиға немесе ән әлемге көзқарасыңды өзгертті?'],
+  ['deep','Какой ты видишь свою жизнь через 10 лет?','10 жылдан кейін өміріңді қалай елестетесің?'],
+  ['deep','За что ты больше всего благодарен(на) своим родителям?','Ата-анаңа ең көп не үшін алғыс айтасың?'],
+  ['deep','Какую семейную традицию ты хотел(а) бы сохранить?','Қай отбасылық дәстүрді сақтағың келеді?'],
+  ['deep','Когда ты в последний раз плакал(а) и из-за чего?','Соңғы рет қашан жыладың және неге?'],
+  ['deep','Что бы ты хотел(а), чтобы люди помнили о тебе?','Адамдар сен туралы нені есте сақтағанын қалайсың?'],
+  ['deep','Какая твоя самая большая мечта, которую ты ещё не осуществил(а)?','Әлі орындалмаған ең үлкен арманың қандай?'],
+  ['deep','Есть ли поступок, за который тебе до сих пор немного стыдно?','Әлі күнге дейін сәл ұялатын әрекетің бар ма?'],
+  ['deep','Что даёт тебе силы в трудные дни?','Қиын күндері саған не күш береді?'],
+  ['deep','Какой жизненный урок дался тебе тяжелее всего?','Қай өмір сабағы саған ең қиын берілді?'],
+  ['deep','Каким человеком ты стремишься стать?','Қандай адам болуға ұмтыласың?'],
+  ['deep','Если бы можно было вернуться в один день из прошлого, какой бы ты выбрал(а)?','Өткеннің бір күніне оралуға болса, қай күнді таңдар едің?'],
+  ['deep','Что в своём характере ты хотел(а) бы изменить?','Мінезіңнің қай жағын өзгерткің келер еді?'],
+  ['deep','Где ты чувствуешь себя по-настоящему дома?','Қай жерде өзіңді шынымен үйдегідей сезінесің?'],
+  ['deep','Кто твой настоящий герой и почему?','Сенің нағыз кейіпкерің кім және неге?'],
+  ['deep','Чем бы ты занимался(ась), если бы деньги не имели значения?','Ақшаның маңызы болмаса, немен айналысар едің?'],
+  ['deep','Какое решение в своей жизни ты считаешь самым смелым?','Өміріңдегі қай шешімді ең батыл деп санайсың?'],
+  ['deep','Какую игрушку или вещь из детства ты помнишь до сих пор?','Балалық шағыңнан қай ойыншық немесе зат әлі есіңде?'],
+  ['deep','Что тебя по-настоящему вдохновляет?','Сені шынымен не шабыттандырады?'],
+  ['deep','Во что ты веришь, даже если другие с этим не согласны?','Басқалар келіспесе де, сен неге сенесің?'],
+  ['deep','Какое качество ты больше всего ценишь в людях?','Адамдардағы қай қасиетті ең жоғары бағалайсың?'],
+  ['deep','Что бы ты написал(а) в письме самому(ой) себе в будущее?','Болашақтағы өзіңе хат жазсаң, не жазар едің?'],
+  ['deep','Какой момент прошлого года ты хотел(а) бы прожить снова?','Өткен жылдың қай сәтін қайта бастан өткергің келеді?'],
+  ['deep','В какой момент жизни ты чувствовал(а) себя ближе всего к Аллаху?','Өміріңнің қай сәтінде өзіңді Аллаһқа ең жақын сезіндің?'],
+  ['deep','Какая сура или дуа особенно дорога тебе и почему?','Қай сүре немесе дұға саған ерекше қымбат және неге?'],
+  ['deep','Какое твоё самое тёплое воспоминание о Рамадане?','Рамазан айы туралы ең жылы естелігің қандай?'],
+  ['deep','Как вера помогает тебе в трудные моменты?','Қиын сәттерде иман саған қалай көмектеседі?'],
+  ['deep','Какую благую привычку ты хотел(а) бы в себе укрепить?','Бойыңдағы қай жақсы әдетті нығайтқың келеді?'],
+  ['deep','Чему тебя научили бабушка и дедушка?','Әжең мен атаң саған не үйретті?'],
+  ['deep','Какой поступок родителей ты по-настоящему оценил(а), только став взрослым(ой)?','Ата-анаңның қай әрекетін ересек болғанда ғана шын бағаладың?'],
+  ['deep','Каким, по-твоему, должен быть хороший мусульманин в повседневной жизни?','Сенің ойыңша, жақсы мұсылман күнделікті өмірде қандай болуы керек?'],
+  ['deep','Что для тебя значит шукр — благодарность?','Сен үшін шүкірлік нені білдіреді?'],
+  ['deep','Какое доброе дело запомнилось тебе больше всего — сделанное тобой или для тебя?','Қай игі іс есіңде көбірек қалды — сен жасаған ба, әлде саған жасалған ба?'],
+  ['deep','Мечтаешь ли ты совершить хадж или умру? Как ты это представляешь?','Қажылыққа немесе умраға баруды армандайсың ба? Оны қалай елестетесің?'],
+  ['deep','Какое качество ты хотел(а) бы передать своим будущим детям?','Болашақ балаларыңа қандай қасиетті дарытқың келеді?'],
+  ['deep','Что ты считаешь настоящим богатством?','Нағыз байлық деп нені санайсың?'],
+  ['deep','Был ли человек, который появился в твоей жизни именно в нужный момент?','Өміріңе дәл керек кезде келген адам болды ма?'],
+  ['deep','Как ты обычно справляешься с обидой?','Өкпені әдетте қалай жеңесің?'],
+  ['deep','Что для тебя значит прощать?','Сен үшін кешіру нені білдіреді?'],
+  ['deep','Какой день ты считаешь самым счастливым в своей жизни?','Өміріңдегі ең бақытты күн деп қай күнді санайсың?'],
+  ['deep','Что ты хотел(а) бы успеть сделать для своих родителей?','Ата-анаң үшін не істеп үлгергің келеді?'],
+  ['deep','За какую ошибку из прошлого ты благодарен(на), потому что она тебя многому научила?','Өткендегі қай қателігіңе ризасың, өйткені ол саған көп нәрсе үйретті?'],
+  ['deep','Какое твоё достижение, о котором мало кто знает?','Аз адам білетін қандай жетістігің бар?'],
+  ['deep','Каким ты был(а) ребёнком: тихим, шумным, любопытным?','Бала кезіңде қандай едің: тыныш па, шулы ма, әуесқой ма?'],
+  ['deep','Какой запах или звук сразу возвращает тебя в детство?','Қай иіс немесе дыбыс сені бірден балалық шаққа оралтады?'],
+  ['deep','Чему тебя научила самая тяжёлая потеря?','Ең ауыр жоғалту саған не үйретті?'],
+  ['deep','Как ты понимаешь, что принял(а) правильное решение?','Дұрыс шешім қабылдағаныңды қалай түсінесің?'],
+  ['deep','Что тебе важнее: оказаться правым(ой) или сохранить мир?','Саған не маңыздырақ: дұрыс болып шығу ма, әлде татулықты сақтау ма?'],
+  ['deep','Какой совет из прочитанного запомнился тебе на всю жизнь?','Оқығандарыңнан қай кеңес өмір бойы есіңде қалды?'],
+  ['deep','Есть ли у тебя мечта, к которой ты боишься сделать первый шаг?','Алғашқы қадам жасауға қорқатын арманың бар ма?'],
+  ['deep','Как ты отдыхаешь душой?','Жаныңды қалай демалтасың?'],
+  ['deep','Какое место на земле тебе хочется увидеть больше всего?','Жер бетіндегі қай жерді бәрінен бұрын көргің келеді?'],
+  ['deep','Каким ты хочешь видеть свой дом через много лет?','Көп жылдан кейін үйіңді қандай күйде көргің келеді?'],
+  ['deep','Что ты ценишь в дружбе больше всего?','Достықта ең көп нені бағалайсың?'],
+  ['deep','Кто твой самый близкий друг и чем он тебе дорог?','Ең жақын досың кім және ол саған немен қымбат?'],
+  ['deep','Какой поступок требует от тебя больше всего смелости?','Қай әрекет сенен ең көп батылдықты талап етеді?'],
+  ['deep','Чего ты хочешь достичь в ближайший год?','Алдағы бір жылда неге жеткің келеді?'],
+  ['deep','Какая черта характера досталась тебе от отца или матери?','Мінезіңнің қай қыры әкеңнен немесе анаңнан дарыды?'],
+  ['deep','Что ты делаешь, когда тебе одиноко?','Жалғыздық сезінгенде не істейсің?'],
+  ['deep','Какая самая ценная вещь в твоей жизни досталась тебе не за деньги?','Өміріңдегі ақшаға келмеген ең құнды нәрсе қандай?'],
+  ['deep','Какой праздник в твоей семье самый тёплый и почему?','Отбасыңдағы ең жылы мереке қайсы және неге?'],
+  ['deep','Как в твоей семье принято проявлять любовь?','Отбасыңда сүйіспеншілікті қалай білдіру қалыптасқан?'],
+  ['deep','Какой момент ты хотел(а) бы растянуть надолго?','Қай сәттің ұзаққа созылғанын қалар едің?'],
+  ['deep','Что для тебя значит быть хорошим человеком?','Сен үшін жақсы адам болу нені білдіреді?'],
+  ['deep','Что бы ты сделал(а), если бы знал(а), что никто тебя не осудит?','Ешкім сынамайтынын білсең, не істер едің?'],
+  ['deep','Что для тебя сабр — терпение? Когда оно тебе особенно помогло?','Сен үшін сабыр деген не? Ол саған қашан ерекше көмектесті?'],
+  ['deep','Что тебя больше всего тревожит, когда ты думаешь о будущем?','Болашақ туралы ойлағанда сені ең көп не алаңдатады?'],
+  ['deep','Что даёт тебе ощущение покоя?','Саған не тыныштық сезімін береді?'],
+  ['deep','Какую историю из жизни пророков или сподвижников ты любишь больше всего?','Пайғамбарлар немесе сахабалар өмірінен қай оқиғаны ең жақсы көресің?'],
+  ['deep','Какое знание ты хотел(а) бы получить в этой жизни?','Осы өмірде қандай ілім алғың келеді?'],
+  ['deep','Какое у тебя самое любимое воспоминание с братьями или сёстрами?','Бауырларыңмен байланысты ең сүйікті естелігің қандай?'],
+  ['deep','Что ты делаешь, чтобы каждый день становиться лучше?','Күн сайын жақсаруың үшін не істейсің?'],
+  ['deep','Что тебя больше всего трогает в людях?','Адамдардағы не сені қатты тебірентеді?'],
+  ['deep','Как ты относишься к деньгам: больше копишь или тратишь?','Ақшаға қалай қарайсың: көбірек жинайсың ба, әлде жұмсайсың ба?'],
+  ['deep','Какую помощь людям ты считаешь самой важной?','Адамдарға көрсетілетін қай көмекті ең маңызды деп санайсың?'],
+  ['deep','Что бы ты изменил(а) в мире, если бы мог(ла)?','Мүмкіндігің болса, әлемде нені өзгертер едің?'],
+  ['deep','Чему тебя научил твой самый трудный год?','Ең қиын жылың саған не үйретті?'],
+  ['deep','О чём ты чаще всего просишь в дуа?','Дұғада ең жиі не сұрайсың?'],
+  ['deep','Что для тебя значит уважение к старшим?','Сен үшін үлкенді құрметтеу нені білдіреді?'],
+  ['deep','Каким ты был(а) в подростковом возрасте?','Жасөспірім кезіңде қандай едің?'],
+  ['deep','Какая мечта из детства у тебя уже сбылась?','Балалық шағыңдағы қай арманың орындалып үлгерді?'],
+  ['deep','Что для тебя значит слово «дом»?','«Үй» деген сөз сен үшін нені білдіреді?'],
+  ['deep','В чём ты видишь своё главное предназначение?','Өзіңнің басты мақсатыңды неден көресің?'],
+  ['deep','Что помогает тебе не сдаваться?','Берілмеуге саған не көмектеседі?'],
+  ['deep','Кто научил тебя доброте?','Саған мейірімділікті кім үйретті?'],
+  ['deep','От какой привычки ты избавился(ась) и гордишься этим?','Қай әдеттен арылып, соны мақтан тұтасың?'],
+  ['deep','Как ты хочешь провести свою старость?','Қартайған шағыңды қалай өткізгің келеді?'],
+  ['deep','Что для тебя значит быть честным(ой)?','Сен үшін адал болу нені білдіреді?'],
+  ['deep','За что ты благодаришь Аллаха сегодня?','Бүгін Аллаһқа не үшін шүкір етесің?'],
+  ['deep','Какой след ты хочешь оставить после себя?','Артыңда қандай із қалдырғың келеді?'],
+
+  // ---------- Про нас / Біз туралы (100) ----------
+  ['us','Что ты подумал(а) обо мне, когда увидел(а) меня в первый раз?','Мені алғаш көргенде не ойладың?'],
+  ['us','В какой момент ты понял(а), что я тебе нравлюсь?','Мені ұнататыныңды қай сәтте түсіндің?'],
+  ['us','Какое наше общее воспоминание у тебя самое любимое?','Ортақ естеліктеріміздің ішінде саған ең ұнайтыны қайсы?'],
+  ['us','Что я делаю такого, отчего у тебя теплеет на душе?','Мен не істегенде жүрегің жылып қалады?'],
+  ['us','Какая моя привычка кажется тебе милой?','Менің қай әдетім саған сүйкімді көрінеді?'],
+  ['us','Куда бы ты хотел(а) поехать вместе со мной?','Менімен бірге қайда барғың келеді?'],
+  ['us','Какую песню ты бы назвал(а) «нашей»?','Қай әнді «біздің әніміз» деп атар едің?'],
+  ['us','Чему ты научился(ась) благодаря нашим отношениям?','Қарым-қатынасымыздың арқасында неге үйрендің?'],
+  ['us','Как ты без слов понимаешь, что ты мне дорог(а)?','Маған қымбат екеніңді сөзсіз қалай түсінесің?'],
+  ['us','Какая наша встреча запомнилась тебе больше всего?','Қай кездесуіміз саған ерекше есте қалды?'],
+  ['us','Что бы ты хотел(а), чтобы мы делали чаще?','Біздің нені жиірек істегенімізді қалайсың?'],
+  ['us','Какая черта моего характера нравится тебе больше всего?','Менің мінезімнің қай қыры саған ең қатты ұнайды?'],
+  ['us','Каким ты видишь наш идеальный выходной?','Біздің мінсіз демалыс күнімізді қалай елестетесің?'],
+  ['us','Что для тебя значит доверие в паре?','Жұп арасындағы сенім сен үшін нені білдіреді?'],
+  ['us','Какую общую традицию ты хотел(а) бы придумать для нас?','Біз үшін қандай ортақ дәстүр ойлап тапқың келеді?'],
+  ['us','Когда ты особенно скучаешь по мне?','Мені әсіресе қашан сағынасың?'],
+  ['us','Какие мои слова или поступок ты запомнил(а) навсегда?','Менің қай сөзім немесе әрекетім есіңде мәңгі қалды?'],
+  ['us','Как тебе приятнее получать заботу: словами, подарками, временем вместе или помощью?','Қамқорлықты қалай алғанды жақсы көресің: сөзбен, сыйлықпен, бірге өткізген уақытпен әлде көмекпен бе?'],
+  ['us','Какое приключение ты хотел(а) бы пережить вместе?','Бірге қандай шытырман оқиғаны бастан өткергің келеді?'],
+  ['us','Что во мне тебя удивило, когда мы узнали друг друга лучше?','Бір-бірімізді жақсырақ таныған кезде мендегі не сені таң қалдырды?'],
+  ['us','Каким ты представляешь наш дом мечты?','Біздің арман үйімізді қалай елестетесің?'],
+  ['us','Что помогает нам мириться после размолвки?','Ренжіскеннен кейін татуласуымызға не көмектеседі?'],
+  ['us','За что ты хотел(а) бы сказать мне спасибо прямо сейчас?','Дәл қазір маған не үшін рахмет айтқың келеді?'],
+  ['us','Какую мою улыбку или жест ты узнаешь из тысячи?','Менің қай күлкімді немесе қимылымды мыңның ішінен танисың?'],
+  ['us','Что мы обязательно должны сделать вместе в этом году?','Осы жылы бірге міндетті түрде не істеуіміз керек?'],
+  ['us','Какой ты видишь нашу пару через 20 лет?','20 жылдан кейін жұбымызды қалай елестетесің?'],
+  ['us','В чём мы с тобой похожи, а в чём совсем разные?','Біз немен ұқсаспыз, ал немен мүлде өзгешеміз?'],
+  ['us','Какой мой подарок запомнился тебе больше всего?','Менің қай сыйлығым саған көбірек есте қалды?'],
+  ['us','Что тебе хочется мне рассказать, но ты ещё не решался(ась)?','Маған айтқың келетін, бірақ әлі батылың жетпеген не бар?'],
+  ['us','Какое ласковое обращение ко мне тебе нравится больше всего?','Маған айтатын қай еркелету сөзің саған көбірек ұнайды?'],
+  ['us','Если бы о нашей истории написали книгу, как бы она называлась?','Біздің тарихымыз туралы кітап жазылса, ол қалай аталар еді?'],
+  ['us','Какой наш разговор вдохновил тебя больше всего?','Қай әңгімеміз сені көбірек шабыттандырды?'],
+  ['us','Опиши наши отношения тремя словами.','Қарым-қатынасымызды үш сөзбен сипатта.'],
+  ['us','Какие качества для тебя главные в спутнике жизни?','Өмірлік серігіңнің бойындағы қай қасиеттер сен үшін басты?'],
+  ['us','Какой ты видишь нашу будущую семью?','Болашақ отбасымызды қалай елестетесің?'],
+  ['us','Как ты представляешь распределение обязанностей в семье?','Отбасындағы міндеттерді бөлісуді қалай елестетесің?'],
+  ['us','Как мы будем решать разногласия?','Келіспеушіліктерді қалай шешеміз?'],
+  ['us','Что для тебя значит быть хорошим мужем или хорошей женой?','Сен үшін жақсы күйеу немесе жақсы әйел болу нені білдіреді?'],
+  ['us','Какое место будет занимать вера в нашей семье?','Отбасымызда иман қандай орын алады?'],
+  ['us','Как бы ты хотел(а), чтобы мы встречали Рамадан?','Рамазан айын қалай қарсы алғанымызды қалайсың?'],
+  ['us','Какие традиции твоей семьи ты хочешь перенести в нашу?','Отбасыңның қай дәстүрлерін біздің отбасымызға алып келгің келеді?'],
+  ['us','Как мы будем заботиться о родителях друг друга?','Бір-біріміздің ата-анамызға қалай қамқорлық жасаймыз?'],
+  ['us','Сколько детей ты хотел(а) бы и как бы их воспитывал(а)?','Неше бала қалайсың және оларды қалай тәрбиелер едің?'],
+  ['us','Как ты относишься к тому, чтобы вместе планировать бюджет?','Бюджетті бірге жоспарлауға қалай қарайсың?'],
+  ['us','Что я могу делать, чтобы ты чувствовал(а) себя услышанным(ой)?','Өзіңді тыңдалған сезінуің үшін мен не істей аламын?'],
+  ['us','Как я могу поддержать тебя, когда тебе тяжело?','Саған ауыр болғанда мен сені қалай қолдай аламын?'],
+  ['us','Что ты хочешь, чтобы я знал(а) о тебе, но я пока не знаю?','Мен әлі білмейтін, бірақ білгенімді қалайтын нәрсең не?'],
+  ['us','Какой мой поступок заставил тебя мной гордиться?','Менің қай әрекетім сені мақтандырды?'],
+  ['us','Что ты особенно ценишь в наших разговорах?','Біздің әңгімелерімізде нені ерекше бағалайсың?'],
+  ['us','Какое доброе дело мы могли бы сделать вместе?','Бірге қандай игі іс жасай аламыз?'],
+  ['us','Какой город ты хотел(а) бы мне показать?','Маған қай қаланы көрсеткің келеді?'],
+  ['us','Какое блюдо ты хотел(а) бы научиться готовить вместе со мной?','Қай тағамды менімен бірге пісіруді үйренгің келеді?'],
+  ['us','Что тебе нравится в моей семье?','Менің отбасымда саған не ұнайды?'],
+  ['us','Как ты понимаешь, что я расстроен(а), даже если я молчу?','Үндемесем де, көңілім түсіп тұрғанын қалай түсінесің?'],
+  ['us','Какая моя фраза всегда тебя смешит?','Менің қай сөзім сені әрқашан күлдіреді?'],
+  ['us','Чем я тебя вдохновляю?','Мен сені немен шабыттандырамын?'],
+  ['us','Какую мою мечту ты хотел(а) бы помочь мне исполнить?','Менің қай арманымды орындауға көмектескің келеді?'],
+  ['us','Как бы ты описал(а) меня своему лучшему другу?','Мені ең жақын досыңа қалай сипаттар едің?'],
+  ['us','Что было самым трудным в начале нашего знакомства?','Танысуымыздың басында ең қиыны не болды?'],
+  ['us','Что нам стоит обсуждать, прежде чем принимать большие решения?','Үлкен шешім қабылдамас бұрын нені талқылағанымыз жөн?'],
+  ['us','Как бы ты хотел(а), чтобы мы проводили пятницу — джума?','Жұма күнін қалай өткізгенімізді қалайсың?'],
+  ['us','Какое наше маленькое достижение тебе запомнилось?','Біздің қай кішкентай жетістігіміз есіңде қалды?'],
+  ['us','Что, по-твоему, я делаю лучше всех на свете?','Сенің ойыңша, мен нені бәрінен жақсы істеймін?'],
+  ['us','Чему новому мы могли бы научиться вместе?','Бірге қандай жаңа нәрсені үйрене аламыз?'],
+  ['us','Что для тебя значит уважение в паре?','Жұп арасындағы құрмет сен үшін нені білдіреді?'],
+  ['us','Как мы можем радовать друг друга без повода?','Бір-бірімізді себепсіз қалай қуанта аламыз?'],
+  ['us','Какое моё качество ты хотел(а) бы перенять?','Менің қай қасиетімді бойыңа сіңіргің келеді?'],
+  ['us','Каким ты представляешь наше идеальное утро?','Біздің мінсіз таңымызды қалай елестетесің?'],
+  ['us','Что во мне тебя смешит?','Мендегі не сені күлдіреді?'],
+  ['us','Какой из наших общих планов радует тебя больше всего?','Ортақ жоспарларымыздың қайсысы сені көбірек қуантады?'],
+  ['us','О чём бы ты хотел(а), чтобы мы говорили чаще?','Біздің не туралы жиірек сөйлескенімізді қалайсың?'],
+  ['us','Что для тебя ревность и где её граница?','Қызғаныш сен үшін не және оның шегі қайда?'],
+  ['us','Как ты хочешь, чтобы мы отмечали важные для нас даты?','Біз үшін маңызды күндерді қалай атап өткенімізді қалайсың?'],
+  ['us','Какой подарок от меня обрадовал бы тебя сейчас?','Қазір менен қандай сыйлық алсаң қуанар едің?'],
+  ['us','Если бы мы открыли общее дело, чем бы мы занимались?','Бірге өз ісімізді ашсақ, немен айналысар едік?'],
+  ['us','Какую нашу переписку или разговор ты помнишь до сих пор?','Біздің қай хат алмасуымыз немесе әңгімеміз әлі есіңде?'],
+  ['us','В каких ситуациях мы с тобой — лучшая команда?','Қандай жағдайларда екеуміз ең жақсы командамыз?'],
+  ['us','Что помогает тебе мне доверять?','Маған сенуіңе не көмектеседі?'],
+  ['us','Есть ли что-то, что тебя тревожит в наших отношениях?','Қарым-қатынасымызда сені алаңдататын нәрсе бар ма?'],
+  ['us','Как мне лучше поддержать тебя перед важным событием?','Маңызды оқиға алдында сені қалай қолдағаным дұрыс?'],
+  ['us','Что ты чувствуешь, когда мы долго не видимся?','Ұзақ уақыт көріспегенде не сезінесің?'],
+  ['us','С какой дуа ты хотел(а) бы обратиться к Аллаху за нас?','Біз үшін Аллаһтан қандай дұғамен тілегің келеді?'],
+  ['us','Чем бы мы занялись, если бы провели целый день без телефонов?','Бір күнді толық телефонсыз өткізсек, немен айналысар едік?'],
+  ['us','Какую книгу ты хотел(а) бы, чтобы мы прочитали вместе?','Қай кітапты бірге оқығанымызды қалайсың?'],
+  ['us','Как думаешь, за что нас ценят наши близкие?','Қалай ойлайсың, жақындарымыз бізді не үшін бағалайды?'],
+  ['us','Какое моё обещание для тебя особенно важно?','Менің қай уәдем сен үшін ерекше маңызды?'],
+  ['us','Что ты хочешь пожелать нам на ближайший год?','Алдағы бір жылға бізге не тілейсің?'],
+  ['us','Что бы ты написал(а) в письме нашим будущим детям?','Болашақ балаларымызға хат жазсаң, не жазар едің?'],
+  ['us','Какой мой совет оказался для тебя полезным?','Менің қай кеңесім саған пайдалы болды?'],
+  ['us','Что для тебя признак крепкой семьи?','Мықты отбасының белгісі сен үшін не?'],
+  ['us','Как бы ты хотел(а), чтобы мы отмечали Айт и Наурыз?','Айт пен Наурызды қалай тойлағанымызды қалайсың?'],
+  ['us','Что тебя трогает в том, как я отношусь к своей семье?','Менің отбасыма деген қарым-қатынасымда сені не тебірентеді?'],
+  ['us','Какой вопрос ты давно хотел(а) мне задать?','Маған көптен бері қойғың келген сұрақ қандай?'],
+  ['us','Какие слова ты хотел(а) бы слышать от меня чаще?','Менен қандай сөздерді жиірек естігің келеді?'],
+  ['us','Что, по-твоему, мы никогда не должны потерять?','Сенің ойыңша, біз нені ешқашан жоғалтпауымыз керек?'],
+  ['us','Какой наш общий момент ты бы положил(а) в шкатулку воспоминаний?','Ортақ сәттеріміздің қайсысын естеліктер сандықшасына салар едің?'],
+  ['us','Чем бы ты хотел(а), чтобы мы гордились через 10 лет?','10 жылдан кейін нені мақтан тұтқанымызды қалайсың?'],
+  ['us','Как ты понимаешь, что мы на одной волне?','Бір толқында екенімізді қалай түсінесің?'],
+  ['us','Что ты хочешь сказать мне прямо сейчас от всего сердца?','Дәл қазір маған шын жүректен не айтқың келеді?'],
+  ['us','За что ты благодаришь Аллаха в наших отношениях?','Қарым-қатынасымызда Аллаһқа не үшін шүкір етесің?']
+];
+
+// [русский, қазақша]
+const TASKS = [
+  ['Нарисуйте друг друга за 30 секунд, не отрывая ручку от бумаги!','Қаламды қағаздан айырмай, бір-біріңнің суретіңді 30 секундта салыңдар!'],
+  ['Сделайте совместное фото с самыми смешными лицами.','Ең күлкілі бет-әлпетпен бірге суретке түсіңдер.'],
+  ['По очереди назовите 5 качеств, которые вы цените друг в друге.','Кезекпен бір-біріңде бағалайтын 5 қасиетті атаңдар.'],
+  ['Придумайте вместе название и девиз вашей пары.','Жұптарыңның атауы мен ұранын бірге ойлап табыңдар.'],
+  ['Напишите друг другу короткую записку и обменяйтесь ею в конце вечера.','Бір-біріңе қысқа хат жазып, кештің соңында алмасыңдар.'],
+  ['Расскажите историю вашего знакомства, по очереди добавляя по одному предложению.','Танысу тарихыңды кезекпен бір-бір сөйлемнен қосып айтып беріңдер.'],
+  ['Угадайте любимый цвет, блюдо и книгу друг друга. За каждый верный ответ — комплимент!','Бір-біріңнің сүйікті түсіңді, тағамыңды және кітабыңды табыңдар. Әр дұрыс жауапқа — бір мақтау сөз!'],
+  ['Запишите короткое видео-послание самим себе через год.','Бір жылдан кейінгі өздеріңе қысқа бейнехат жазып алыңдар.'],
+  ['Придумайте друг другу новое ласковое прозвище.','Бір-біріңе жаңа еркелету есім ойлап табыңдар.'],
+  ['Составьте вместе список из 5 мест, куда вы обязательно поедете.','Міндетті түрде баратын 5 жердің тізімін бірге жасаңдар.'],
+  ['30 секунд повторяйте движения друг друга, как в зеркале.','30 секунд бойы бір-біріңнің қимылдарыңды айнадағыдай қайталаңдар.'],
+  ['Скажите друг другу комплимент на выдуманном языке — второй «переводит».','Бір-біріңе ойдан шығарылған тілде мақтау айтыңдар — екіншісі «аударады».'],
+  ['Повторите ваше первое совместное фото — та же поза, те же улыбки.','Алғашқы бірге түскен суреттеріңді қайталаңдар — сол қалып, сол күлкі.'],
+  ['Сделайте вместе дуа за ваших родителей.','Ата-аналарың үшін бірге дұға жасаңдар.'],
+  ['Каждый за минуту пишет 3 мечты на этот год. Сравните — есть ли совпадения?','Әрқайсың бір минутта осы жылға 3 арман жазыңдар. Салыстырыңдар — сәйкестік бар ма?'],
+  ['Придумайте маленькое доброе дело и договоритесь, когда сделаете его вместе.','Кішкентай игі іс ойлап тауып, оны қашан бірге жасайтындарыңды келісіңдер.'],
+  ['Покажите эмоцию только мимикой, без слов, — второй угадывает. Три раунда!','Бір эмоцияны сөзсіз, тек бет-әлпетпен көрсетіңдер — екіншісі табады. Үш раунд!'],
+  ['Спойте вместе припев песни, которую знаете оба.','Екеуің де білетін әннің қайырмасын бірге айтыңдар.'],
+  ['Расскажите друг другу аят или хадис, который вам особенно дорог.','Бір-біріңе өздеріңе ерекше қымбат аят немесе хадис айтып беріңдер.'],
+  ['Опишите друг друга тремя словами за 10 секунд — быстро, не раздумывая!','Бір-біріңді 10 секундта үш сөзбен сипаттаңдар — тез, ойланбай!']
+];
+
+// [русский, қазақша, автор ru, автор kk]
+const MESSAGES = [
+  ['«И среди Его знамений — то, что Он сотворил для вас супругов из вас самих, чтобы вы находили в них покой, и установил между вами любовь и милосердие».','«Оның белгілерінің бірі — өздеріңнен жұбайлар жаратып, олармен тыныштық табуларың үшін араларыңа сүйіспеншілік пен мейірім орнатуы».','Коран, сура «Ар-Рум», 30:21','Құран, «Рум» сүресі, 30:21'],
+  ['Пусть ваши вечера всегда будут такими же тёплыми, как этот.','Кештерің әрқашан осы кештей жылы болсын.'],
+  ['«Без любви мир пуст».','«Махаббатсыз дүние бос».','Абай Кунанбаев','Абай Құнанбайұлы'],
+  ['Желаем вам смеяться вместе чаще, чем спорить, и прощать быстрее, чем обижаться.','Дауласқаннан гөрі жиі бірге күліңдер, ренжігеннен гөрі тезірек кешіріңдер.'],
+  ['«Они — одеяние для вас, а вы — одеяние для них».','«Олар — сендерге киім, сендер — оларға киім».','Коран, сура «Аль-Бакара», 2:187','Құран, «Бақара» сүресі, 2:187'],
+  ['Вы — одна команда. Всё, что встретится на пути, вы пройдёте вдвоём.','Сендер — бір команда. Алдарыңнан не шықса да, екеулеп өтесіңдер.'],
+  ['«Самое большое счастье в жизни — это уверенность, что тебя любят».','«Өмірдегі ең үлкен бақыт — өзіңді жақсы көретініне сенімді болу».','Виктор Гюго','Виктор Гюго'],
+  ['Пусть у вас будет тысяча общих воспоминаний — и это будет только начало.','Ортақ естеліктерің мыңға жетсін — және бұл тек бастамасы болсын.'],
+  ['Сегодня вы узнали друг друга чуть лучше. Это и есть маленькое чудо.','Бүгін бір-біріңді сәл жақсырақ таныдыңдар. Бұл — кішкентай ғажайып.'],
+  ['«Лучшие из вас — те, кто лучше всех относится к своей семье».','«Сендердің ең жақсыларың — отбасына ең жақсы қарайтындарың».','хадис, ат-Тирмизи','хадис, Тирмизи'],
+  ['Желаем вам всегда находить время друг для друга — даже в самые занятые дни.','Ең қарбалас күндері де бір-біріңе уақыт таба беріңдер.'],
+  ['«Любовь смотрит не глазами, а душой».','«Махаббат көзбен емес, жанмен қарайды».','Уильям Шекспир','Уильям Шекспир'],
+  ['Пусть ваша любовь будет как хороший чай: крепкой, тёплой и всегда к месту.','Махаббаттарың жақсы шай сияқты болсын: қою, жылы әрі әрқашан орнында.'],
+  ['Пусть каждое утро начинается с улыбки друг для друга.','Әр таң бір-біріңе арналған күлкіден басталсын.'],
+  ['«Счастье — это когда тебя понимают».','«Бақыт — сені түсінгенде».','из фильма «Доживём до понедельника»','«Дүйсенбіге дейін жетейік» фильмінен'],
+  ['Берегите то, что у вас есть. Это редкость и большая ценность.','Қолдарыңдағыны аялаңдар. Бұл — сирек әрі үлкен байлық.'],
+  ['Пусть Аллах наполнит ваш путь баракой и сделает вас отрадой друг для друга.','Аллаһ жолдарыңа береке беріп, бір-біріңе көз қуаныш етсін.'],
+  ['Желаем вам смелости мечтать вместе и терпения идти к мечтам плечом к плечу.','Бірге армандауға батылдық, арманға иық тірестіре жетуге сабыр тілейміз.'],
+  ['Пусть ваш дом всегда будет полон смеха, вкусной еды и тёплых слов.','Үйлерің әрқашан күлкіге, дәмді асқа және жылы сөзге толы болсын.'],
+  ['«Господь наш! Даруй нам в наших супругах и потомстве отраду для глаз».','«Раббымыз! Бізге жұбайларымыздан және ұрпақтарымыздан көз қуанышын бере гөр».','Коран, сура «Аль-Фуркан», 25:74','Құран, «Фұрқан» сүресі, 25:74'],
+  ['Спасибо вам за этот вечер. Пусть таких будет ещё очень много.','Осы кеш үшін рахмет. Мұндай кештер әлі көп болсын.'],
+  ['Пусть вы всегда слышите друг друга — даже когда говорите шёпотом.','Сыбырлап сөйлесеңдер де, әрқашан бір-біріңді естіңдер.'],
+  ['Желаем вам через 50 лет столько же нежности и уважения, сколько сегодня.','50 жылдан кейін де бүгінгідей нәзіктік пен құрмет тілейміз.'],
+  ['Вы — лучший ответ на вопрос «Что такое любовь?»','«Махаббат деген не?» деген сұрақтың ең жақсы жауабы — сендерсіңдер.'],
+  ['Пусть размолвки будут короткими, а примирения — тёплыми.','Ренжісулерің қысқа, татуласуларың жылы болсын.'],
+  ['Не забывайте: лучшие вопросы ещё впереди, и задавать их вы будете друг другу всю жизнь.','Ұмытпаңдар: ең жақсы сұрақтар әлі алда, оларды бір-біріңе өмір бойы қоя бересіңдер.'],
+  ['Пусть рядом друг с другом вам всегда будет спокойно, как дома.','Бір-біріңнің жаныңда әрқашан үйдегідей тыныш болсын.'],
+  ['Любовь живёт в мелочах: в чашке чая, в сообщении «как ты?», в искренней дуа друг за друга.','Махаббат ұсақ нәрселерде: бір кесе шайда, «қалайсың?» деген хабарламада, бір-біріңе жасалған шынайы дұғада.'],
+  ['Желаем, чтобы вы росли вместе, а не порознь, и с каждым годом становились ещё ближе.','Бөлек емес, бірге өсіңдер, әр жыл сайын бір-біріңе жақындай беріңдер.'],
+  ['Пусть самое интересное в вашей истории ещё только начинается.','Тарихтарыңның ең қызықты тұсы енді ғана басталып жатсын.']
+];
+
+const LENGTHS = [
+  { n: 10, ru: '≈ 20 мин', kk: '≈ 20 мин' },
+  { n: 20, ru: '≈ 40 мин', kk: '≈ 40 мин' },
+  { n: 30, ru: '≈ 1 час', kk: '≈ 1 сағат' },
+  { n: 50, ru: '≈ 1,5 часа', kk: '≈ 1,5 сағат' }
+];
+
+const CAT_META = {
+  warm: { emoji: '☕', color: 'var(--warm)' },
+  deep: { emoji: '🌙', color: 'var(--deep)' },
+  us:   { emoji: '💞', color: 'var(--us)' },
+  all:  { emoji: '✨', color: 'var(--accent)' }
+};
+
+const I18N = {
+  ru: {
+    brand: 'Для двоих',
+    appTitle: 'Вопросы для двоих',
+    appSub: '300 вопросов и 20 мини-заданий, чтобы узнать друг друга ещё лучше',
+    lengthTitle: 'Длина игры',
+    lengthNote: 'Считаются отвеченные карты. Когда дойдёте до конца — игра завершится и откроется послание.',
+    lenCards: 'карт',
+    lastCard: 'Последняя карта!',
+    namesTitle: 'Кто играет?',
+    name1: 'Первое имя', name2: 'Второе имя',
+    levelTitle: 'Уровень',
+    lvl_all: 'Все уровни', lvl_all_d: 'Всё вперемешку',
+    lvl_warm: 'Разогрев', lvl_warm_d: 'Лёгкие и смешные',
+    lvl_deep: 'Поглубже', lvl_deep_d: 'Мечты, детство, ценности',
+    lvl_us: 'Про нас', lvl_us_d: 'Об отношениях',
+    tasksToggle: 'Мини-задания между вопросами',
+    start: 'Начать игру', resume: 'Продолжить игру: {a} и {b}',
+    myQuestions: 'Свои вопросы', myQuestionsShort: 'Свои', favorites: 'Избранное',
+    turnLabel: 'Сейчас отвечает', bothLabel: 'Задание для вас обоих', bothShort: 'Для вас обоих',
+    yourCard: '{name}, твоя карта',
+    tapToFlip: 'Нажми, чтобы перевернуть',
+    tapHint: 'Нажмите на карту',
+    skip: 'Пропустить', skipsLeft: 'осталось {n}', noSkips: 'пропусков нет',
+    skipsLabel: 'пропуски',
+    done: 'Ответил(а) →', doneTask: 'Выполнили →',
+    finish: 'Завершить', confirmFinish: 'Завершить игру и открыть послание для вас?', confirmNew: 'Начать новую игру? Текущая игра будет сброшена.',
+    yes: 'Да', no: 'Нет',
+    progress: 'Карта {n} из {total} · осталось {left}',
+    cat_task: 'Мини-задание', cat_custom: 'свой',
+    levelEmpty: 'Вопросы этого уровня закончились 🌿', levelEmptyHint: 'Выберите другой уровень выше или завершите игру',
+    endTitle: 'Спасибо за этот вечер', and: 'и',
+    messageLabel: 'Послание для вашей пары',
+    stat_q: 'вопросов', stat_t: 'заданий', stat_f: 'в избранном',
+    anotherMessage: 'Другое послание', newGame: 'Новая игра',
+    favEmpty: 'Пока пусто. Отмечайте понравившиеся вопросы сердечком ♥',
+    customTitle: 'Свои вопросы',
+    customHint: 'Они сохранятся в этом браузере и будут выпадать в игре вперемешку с остальными.',
+    customPh: 'Например: что тебя сегодня рассмешило?',
+    add: 'Добавить', customEmpty: 'Своих вопросов пока нет',
+    needNames: 'Введите оба имени',
+    favAdded: 'Добавлено в избранное ♥', favRemoved: 'Убрано из избранного',
+    added: 'Вопрос добавлен', removed: 'Вопрос удалён',
+    starts: 'Первым отвечает: {name}',
+    skipUsed: '{name} пропускает вопрос'
+  },
+  kk: {
+    brand: 'Екеуміз',
+    appTitle: 'Екеуге арналған сұрақтар',
+    appSub: 'Бір-біріңді жақсырақ тану үшін 300 сұрақ пен 20 шағын тапсырма',
+    lengthTitle: 'Ойын ұзақтығы',
+    lengthNote: 'Жауап берілген карталар саналады. Соңына жеткенде ойын аяқталып, тілек ашылады.',
+    lenCards: 'карта',
+    lastCard: 'Соңғы карта!',
+    namesTitle: 'Кім ойнайды?',
+    name1: 'Бірінші есім', name2: 'Екінші есім',
+    levelTitle: 'Деңгей',
+    lvl_all: 'Барлық деңгей', lvl_all_d: 'Бәрі аралас',
+    lvl_warm: 'Жылыну', lvl_warm_d: 'Жеңіл әрі күлкілі',
+    lvl_deep: 'Тереңірек', lvl_deep_d: 'Арман, балалық шақ, құндылықтар',
+    lvl_us: 'Біз туралы', lvl_us_d: 'Қарым-қатынас туралы',
+    tasksToggle: 'Сұрақтар арасында шағын тапсырмалар',
+    start: 'Ойынды бастау', resume: 'Ойынды жалғастыру: {a} және {b}',
+    myQuestions: 'Өз сұрақтарымыз', myQuestionsShort: 'Өзіміздікі', favorites: 'Таңдаулылар',
+    turnLabel: 'Қазір жауап береді', bothLabel: 'Екеуіңе арналған тапсырма', bothShort: 'Екеуіңе',
+    yourCard: '{name}, сенің картаң',
+    tapToFlip: 'Аудару үшін бас',
+    tapHint: 'Картаны басыңдар',
+    skip: 'Өткізу', skipsLeft: '{n} қалды', noSkips: 'өткізу қалмады',
+    skipsLabel: 'өткізу',
+    done: 'Жауап бердім →', doneTask: 'Орындадық →',
+    finish: 'Аяқтау', confirmFinish: 'Ойынды аяқтап, сендерге арналған тілекті ашамыз ба?', confirmNew: 'Жаңа ойын бастаймыз ба? Қазіргі ойын жойылады.',
+    yes: 'Иә', no: 'Жоқ',
+    progress: '{total} картаның {n}-сі · {left} қалды',
+    cat_task: 'Шағын тапсырма', cat_custom: 'өзіміздікі',
+    levelEmpty: 'Бұл деңгейдің сұрақтары таусылды 🌿', levelEmptyHint: 'Жоғарыдан басқа деңгейді таңдаңдар немесе ойынды аяқтаңдар',
+    endTitle: 'Осы кеш үшін рахмет', and: 'және',
+    messageLabel: 'Жұптарыңа арналған тілек',
+    stat_q: 'сұрақ', stat_t: 'тапсырма', stat_f: 'таңдаулыда',
+    anotherMessage: 'Басқа тілек', newGame: 'Жаңа ойын',
+    favEmpty: 'Әзірге бос. Ұнаған сұрақтарды жүрекшемен белгілеңдер ♥',
+    customTitle: 'Өз сұрақтарымыз',
+    customHint: 'Олар осы браузерде сақталады және ойында басқа сұрақтармен араласып шығады.',
+    customPh: 'Мысалы: бүгін сені не күлдірді?',
+    add: 'Қосу', customEmpty: 'Әзірге өз сұрақтарымыз жоқ',
+    needNames: 'Екі есімді де енгізіңдер',
+    favAdded: 'Таңдаулыларға қосылды ♥', favRemoved: 'Таңдаулылардан алынды',
+    added: 'Сұрақ қосылды', removed: 'Сұрақ жойылды',
+    starts: 'Бірінші жауап береді: {name}',
+    skipUsed: '{name} сұрақты өткізеді'
+  }
+};
+
+/* =====================================================================
+   STORAGE & STATE
+   ===================================================================== */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k)    { try { localStorage.removeItem(k); } catch (e) {} }
+};
+
+/* =====================================================================
+   SOUNDS (Web Audio — синтез, без файлов)
+   ===================================================================== */
+const Sound = {
+  ctx: null,
+  on: store.get('dg.sound', true),
+  init() {
+    if (!this.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      this.ctx = new AC();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.9;
+      this.master.connect(this.ctx.destination);
+    }
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+  },
+  tone(freq, at, dur, o = {}) {
+    const c = this.ctx, t = c.currentTime + at;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(freq, t);
+    if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+    const v = o.vol || 0.18;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(v, t + (o.attack || 0.01));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(g); g.connect(this.master);
+    osc.start(t); osc.stop(t + dur + 0.05);
+  },
+  bell(freq, at, dur, vol) {
+    this.tone(freq, at, dur, { vol: vol });
+    this.tone(freq * 2, at, dur * 0.6, { vol: vol * 0.25 });
+    this.tone(freq * 3.01, at, dur * 0.3, { vol: vol * 0.08 });
+  },
+  whoosh(at, dur, from, to, vol) {
+    const c = this.ctx, t = c.currentTime + at;
+    const len = Math.floor(c.sampleRate * dur);
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = c.createBufferSource(); src.buffer = buf;
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.2;
+    f.frequency.setValueAtTime(from, t);
+    f.frequency.exponentialRampToValueAtTime(to, t + dur);
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + dur * 0.35);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f); f.connect(g); g.connect(this.master);
+    src.start(t); src.stop(t + dur);
+  },
+  buzz(ms) { if (this.on && navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) {} } },
+  play(name) {
+    if (!this.on) return;
+    this.init();
+    if (!this.ctx) return;
+    switch (name) {
+      case 'tap':
+        this.tone(740, 0, 0.07, { type: 'triangle', vol: 0.07 });
+        break;
+      case 'flip':
+        this.whoosh(0, 0.32, 600, 3200, 0.22);
+        this.bell(880, 0.22, 0.4, 0.09);
+        break;
+      case 'flipBack':
+        this.whoosh(0, 0.28, 2800, 500, 0.16);
+        break;
+      case 'task':
+        this.whoosh(0, 0.3, 600, 3200, 0.2);
+        [1047, 1319, 1568, 2093].forEach((f, i) => this.bell(f, 0.2 + i * 0.07, 0.45, 0.08));
+        break;
+      case 'deal':
+        this.whoosh(0, 0.22, 1800, 700, 0.12);
+        break;
+      case 'done':
+        this.bell(784, 0, 0.5, 0.14);
+        this.bell(1175, 0.11, 0.7, 0.14);
+        this.buzz(25);
+        break;
+      case 'skip':
+        this.tone(520, 0, 0.28, { type: 'triangle', to: 230, vol: 0.13 });
+        this.tone(390, 0.12, 0.25, { type: 'triangle', to: 180, vol: 0.08 });
+        this.buzz([20, 40, 20]);
+        break;
+      case 'favOn':
+        this.tone(600, 0, 0.14, { to: 1300, vol: 0.12 });
+        this.bell(1568, 0.1, 0.35, 0.07);
+        break;
+      case 'favOff':
+        this.tone(900, 0, 0.16, { to: 450, vol: 0.09 });
+        break;
+      case 'error':
+        this.tone(180, 0, 0.18, { type: 'square', vol: 0.05 });
+        this.tone(150, 0.12, 0.2, { type: 'square', vol: 0.05 });
+        this.buzz(60);
+        break;
+      case 'add':
+        this.bell(988, 0, 0.3, 0.1);
+        this.bell(1319, 0.08, 0.45, 0.1);
+        break;
+      case 'finish':
+        [523, 659, 784, 1047].forEach((f, i) => this.bell(f, i * 0.16, 0.9, 0.13));
+        [523, 659, 784].forEach(f => this.bell(f, 0.75, 1.6, 0.07));
+        this.bell(1568, 0.95, 1.2, 0.06);
+        this.buzz([30, 60, 30, 60, 60]);
+        break;
+      case 'message':
+        [1319, 1047, 1568].forEach((f, i) => this.bell(f, i * 0.09, 0.5, 0.08));
+        break;
+    }
+  }
+};
+
+let lang   = store.get('dg.lang', 'ru');
+let favs   = store.get('dg.favs', []);
+let custom = store.get('dg.custom', []);
+let S      = store.get('dg.state', null);
+let setupLevel = 'all';
+let setupLimit = store.get('dg.limit', 20);
+let customCat  = 'warm';
+let lastMsg = -1;
+
+const BASE = QUESTIONS.map((q, i) => ({ id: 'q' + i, cat: q[0], ru: q[1], kk: q[2] }));
+const TASK_ITEMS = TASKS.map((x, i) => ({ id: 't' + i, cat: 'task', ru: x[0], kk: x[1] }));
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function t(key, vars) {
+  let s = (I18N[lang] && I18N[lang][key]) || I18N.ru[key] || key;
+  if (vars) for (const k in vars) s = s.split('{' + k + '}').join(vars[k]);
+  return s;
+}
+const saveState = () => S ? store.set('dg.state', S) : store.del('dg.state');
+
+function allQuestions() {
+  return BASE.concat(custom.map(c => ({ id: c.id, cat: c.cat, ru: c.text, kk: c.text, custom: true })));
+}
+function getItem(id) {
+  if (!id) return null;
+  if (id[0] === 't') return TASK_ITEMS[+id.slice(1)] || null;
+  if (id[0] === 'q') return BASE[+id.slice(1)] || null;
+  const c = custom.find(x => x.id === id);
+  return c ? { id: c.id, cat: c.cat, ru: c.text, kk: c.text, custom: true } : null;
+}
+function remaining(level) {
+  return allQuestions().filter(q => (level === 'all' || q.cat === level) && !S.used.includes(q.id));
+}
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+/* =====================================================================
+   UI helpers
+   ===================================================================== */
+let toastTimer;
+function toast(msg) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+let dialogCb = null;
+function confirmDialog(text, cb) {
+  $('#dialogText').textContent = text;
+  dialogCb = cb;
+  $('#dialog').classList.add('open');
+}
+$('#dialogNo').onclick = () => $('#dialog').classList.remove('open');
+$('#dialogYes').onclick = () => { $('#dialog').classList.remove('open'); if (dialogCb) dialogCb(); };
+
+function showScreen(name) {
+  $$('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + name));
+  window.scrollTo(0, 0);
+}
+function currentScreen() {
+  const s = $('.screen.active');
+  return s ? s.id.replace('screen-', '') : 'setup';
+}
+
+function levelLabel(cat) { return CAT_META[cat].emoji + ' ' + t('lvl_' + cat); }
+
+function tagFor(item) {
+  if (item.cat === 'task') return '🎲 ' + t('cat_task');
+  return levelLabel(item.cat) + (item.custom ? ' · ' + t('cat_custom') : '');
+}
+
+function applyI18n() {
+  document.documentElement.lang = lang === 'kk' ? 'kk' : 'ru';
+  document.title = t('appTitle');
+  $$('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  $$('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  $$('.lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+}
+
+function updateCounts() {
+  $$('[data-count="custom"]').forEach(el => { el.textContent = custom.length; el.hidden = !custom.length; });
+  const validFavs = favs.filter(id => getItem(id));
+  $$('[data-count="fav"]').forEach(el => { el.textContent = validFavs.length; el.hidden = !validFavs.length; });
+}
+
+function renderAll() {
+  applyI18n();
+  renderSetup();
+  if (S && !S.finished) renderGame(true);
+  if (S && S.finished) renderEnd(false);
+  updateCounts();
+  if ($('#sheet-fav').classList.contains('open')) renderFavs();
+  if ($('#sheet-custom').classList.contains('open')) renderCustom();
+}
+
+/* =====================================================================
+   SETUP
+   ===================================================================== */
+function renderSetup() {
+  const wrap = $('#setupLevels');
+  wrap.innerHTML = '';
+  ['all', 'warm', 'deep', 'us'].forEach(cat => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'level' + (setupLevel === cat ? ' on' : '');
+    b.style.setProperty('--c', CAT_META[cat].color);
+    b.innerHTML = '<span class="em"></span><b></b><small></small>';
+    b.querySelector('.em').textContent = CAT_META[cat].emoji;
+    b.querySelector('b').textContent = t('lvl_' + cat);
+    b.querySelector('small').textContent = t('lvl_' + cat + '_d');
+    b.onclick = () => { setupLevel = cat; renderSetup(); };
+    wrap.appendChild(b);
+  });
+  const lens = $('#setupLens');
+  lens.innerHTML = '';
+  LENGTHS.forEach(o => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'len' + (setupLimit === o.n ? ' on' : '');
+    b.innerHTML = '<b></b><small></small>';
+    b.querySelector('b').textContent = o.n;
+    b.querySelector('small').innerHTML = '';
+    b.querySelector('small').append(t('lenCards'), document.createElement('br'), o[lang]);
+    b.onclick = () => { setupLimit = o.n; store.set('dg.limit', o.n); renderSetup(); };
+    lens.appendChild(b);
+  });
+  const resume = $('#btnResume');
+  if (S && !S.finished) {
+    resume.hidden = false;
+    resume.textContent = t('resume', { a: S.names[0], b: S.names[1] });
+    $('#btnStart').className = 'btn btn-soft';
+  } else {
+    resume.hidden = true;
+    $('#btnStart').className = 'btn btn-primary';
+  }
+}
+
+function startGame() {
+  const n1 = $('#name1').value.trim(), n2 = $('#name2').value.trim();
+  let ok = true;
+  [['#name1', n1], ['#name2', n2]].forEach(([sel, v]) => {
+    const el = $(sel);
+    el.classList.remove('error');
+    if (!v) { void el.offsetWidth; el.classList.add('error'); ok = false; }
+  });
+  if (!ok) { Sound.play('error'); toast(t('needNames')); return; }
+  store.set('dg.names', [n1, n2]);
+  S = {
+    names: [n1, n2], skips: [3, 3], turn: Math.random() < .5 ? 0 : 1,
+    level: setupLevel, tasksOn: $('#tasksOn').checked, limit: setupLimit,
+    used: [], current: null, flipped: false,
+    answered: 0, tasksDone: 0, opened: 0, sinceTask: 0, finished: false
+  };
+  draw();
+  showScreen('game');
+  renderGame(true);
+  dealIn();
+  setTimeout(() => toast(t('starts', { name: S.names[S.turn] })), 300);
+}
+
+$('#btnStart').onclick = () => {
+  if (S && !S.finished) confirmDialog(t('confirmNew'), startGame);
+  else startGame();
+};
+$('#btnResume').onclick = () => { showScreen('game'); renderGame(true); dealIn(); };
+
+/* =====================================================================
+   GAME
+   ===================================================================== */
+function draw() {
+  const pool = remaining(S.level);
+  const tasksLeft = TASK_ITEMS.filter(x => !S.used.includes(x.id));
+  const wantTask = S.tasksOn && tasksLeft.length && S.sinceTask >= 3 && Math.random() < 0.28;
+  if (wantTask && pool.length) {
+    S.current = { id: pick(tasksLeft).id };
+    S.sinceTask = 0;
+  } else if (pool.length) {
+    S.current = { id: pick(pool).id };
+    S.sinceTask++;
+  } else if (!remaining('all').length) {
+    S.current = null;
+    finishGame();
+    return;
+  } else {
+    S.current = { empty: true };
+  }
+  S.flipped = !!S.current.empty;
+  saveState();
+}
+
+function renderGame(instant) {
+  if (!S) return;
+  // players
+  const players = $('#players');
+  players.innerHTML = '';
+  S.names.forEach((name, i) => {
+    const p = document.createElement('div');
+    p.className = 'player' + (S.turn === i ? ' active' : '');
+    p.innerHTML = '<div class="pname"></div><div class="pskips"></div>';
+    p.querySelector('.pname').textContent = name;
+    const sk = p.querySelector('.pskips');
+    for (let k = 0; k < 3; k++) {
+      const d = document.createElement('span');
+      d.className = 'dot' + (k >= S.skips[i] ? ' used' : '');
+      sk.appendChild(d);
+    }
+    const lbl = document.createElement('span');
+    lbl.textContent = ' ' + S.skips[i] + '/3 ' + t('skipsLabel');
+    sk.appendChild(lbl);
+    players.appendChild(p);
+  });
+
+  const cur = S.current || {};
+  const item = getItem(cur.id);
+  const isTask = item && item.cat === 'task';
+
+  // turn
+  if (isTask && S.flipped) {
+    $('#turnLabel').textContent = t('bothLabel');
+    $('#turnName').textContent = S.names[0] + ' & ' + S.names[1];
+  } else {
+    $('#turnLabel').textContent = t('turnLabel');
+    $('#turnName').textContent = S.names[S.turn];
+  }
+
+  // level chips
+  const chips = $('#gameLevels');
+  chips.innerHTML = '';
+  ['all', 'warm', 'deep', 'us'].forEach(cat => {
+    const c = document.createElement('button');
+    c.type = 'button';
+    c.className = 'chip' + (S.level === cat ? ' on' : '');
+    c.style.setProperty('--c', CAT_META[cat].color);
+    c.textContent = levelLabel(cat);
+    c.onclick = () => changeLevel(cat);
+    chips.appendChild(c);
+  });
+
+  // card
+  const card = $('#card');
+  if (instant) card.classList.add('notrans');
+  card.dataset.cat = cur.empty ? 'empty' : (item ? item.cat : 'empty');
+  card.classList.toggle('flipped', S.flipped);
+  $('#backName').textContent = t('yourCard', { name: S.names[S.turn] });
+  const isLast = doneCount() + 1 >= S.limit;
+  $('#backLast').hidden = !isLast;
+  $('#backLast').textContent = t('lastCard');
+  if (cur.empty || !item) {
+    $('#cardTag').textContent = levelLabel(S.level);
+    $('#cardNum').textContent = '';
+    $('#qText').innerHTML = '';
+    const d = document.createElement('div');
+    d.innerHTML = '<div></div><div style="font-family:var(--sans);font-size:17px;color:var(--ink-soft);margin-top:12px;font-weight:700"></div>';
+    d.firstChild.textContent = t('levelEmpty');
+    d.lastChild.textContent = t('levelEmptyHint');
+    $('#qText').appendChild(d);
+    $('#qText').classList.add('small');
+    $('#forWho').textContent = '';
+    $('#favBtn').hidden = true;
+  } else {
+    const txt = item[lang];
+    $('#cardTag').textContent = tagFor(item);
+    $('#cardNum').textContent = (doneCount() + 1) + ' / ' + S.limit;
+    $('#qText').textContent = txt;
+    $('#qText').classList.toggle('small', txt.length > 95);
+    $('#forWho').textContent = isTask ? t('bothShort') : S.names[S.turn];
+    $('#favBtn').hidden = false;
+    $('#favBtn').classList.toggle('on', favs.includes(item.id));
+  }
+  card.setAttribute('aria-label', S.flipped ? $('#qText').textContent : t('tapToFlip'));
+  if (instant) { void card.offsetWidth; card.classList.remove('notrans'); }
+
+  // actions
+  const actions = $('#actions');
+  actions.classList.toggle('hidden', !!cur.empty);
+  actions.classList.toggle('locked', !S.flipped);
+  $('#hint').textContent = S.flipped || cur.empty ? '' : t('tapHint');
+  const left = S.skips[S.turn];
+  $('#btnSkip').disabled = left <= 0;
+  $('#skipLeft').textContent = left > 0 ? t('skipsLeft', { n: left }) : t('noSkips');
+  $('#btnDone').textContent = isTask ? t('doneTask') : t('done');
+
+  const dc = Math.min(doneCount() + 1, S.limit);
+  $('#progress').textContent = t('progress', { n: dc, total: S.limit, left: Math.max(0, S.limit - doneCount()) });
+  $('#pbarFill').style.width = (doneCount() / S.limit * 100) + '%';
+}
+
+function doneCount() { return S.answered + S.tasksDone; }
+
+function flip() {
+  if (!S || !S.current || S.current.empty) return;
+  S.flipped = !S.flipped;
+  const it = getItem(S.current.id);
+  Sound.play(S.flipped ? (it && it.cat === 'task' ? 'task' : 'flip') : 'flipBack');
+  saveState();
+  renderGame(false);
+}
+$('#card').addEventListener('click', flip);
+$('#card').addEventListener('keydown', e => {
+  if (e.target !== e.currentTarget) return;
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+});
+
+let dealing = false;
+function dealIn() {
+  Sound.play('deal');
+  const w = $('#cardWrap');
+  w.classList.remove('in'); void w.offsetWidth; w.classList.add('in');
+  setTimeout(() => w.classList.remove('in'), 520);
+}
+function dealNext() {
+  if (dealing) return;
+  dealing = true;
+  const w = $('#cardWrap');
+  w.classList.add('out');
+  setTimeout(() => {
+    draw();
+    w.classList.remove('out');
+    if (S.finished) { dealing = false; return; }
+    renderGame(true);
+    dealIn();
+    dealing = false;
+  }, 320);
+}
+
+$('#btnDone').onclick = () => {
+  if (!S.flipped || dealing) return;
+  const item = getItem(S.current.id);
+  if (!item) return;
+  S.used.push(item.id);
+  if (item.cat === 'task') S.tasksDone++; else S.answered++;
+  Sound.play('done');
+  S.opened++;
+  S.turn = 1 - S.turn;
+  saveState();
+  if (doneCount() >= S.limit) {
+    $('#pbarFill').style.width = '100%';
+    $('#cardWrap').classList.add('out');
+    setTimeout(() => { $('#cardWrap').classList.remove('out'); finishGame(); }, 340);
+  } else dealNext();
+};
+
+$('#btnSkip').onclick = () => {
+  if (!S.flipped || dealing || S.skips[S.turn] <= 0) return;
+  const item = getItem(S.current.id);
+  if (!item) return;
+  S.skips[S.turn]--;
+  Sound.play('skip');
+  S.used.push(item.id);
+  S.opened++;
+  toast(t('skipUsed', { name: S.names[S.turn] }));
+  saveState();
+  dealNext();
+};
+
+function changeLevel(cat) {
+  if (S.level === cat) return;
+  S.level = cat;
+  // карту, которую ещё не перевернули, меняем под новый уровень
+  if (!S.flipped || (S.current && S.current.empty)) {
+    S.sinceTask = Math.max(0, S.sinceTask - 1);
+    const w = $('#cardWrap');
+    w.classList.add('out');
+    setTimeout(() => {
+      draw();
+      w.classList.remove('out');
+      if (S.finished) return;
+      renderGame(true);
+      dealIn();
+    }, 320);
+  } else {
+    saveState();
+  }
+  renderGame(false);
+}
+
+$('#favBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  const id = S && S.current && S.current.id;
+  if (!id) return;
+  toggleFav(id);
+  const b = $('#favBtn');
+  b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+});
+
+function toggleFav(id) {
+  if (favs.includes(id)) { favs = favs.filter(x => x !== id); Sound.play('favOff'); toast(t('favRemoved')); }
+  else { favs.unshift(id); Sound.play('favOn'); toast(t('favAdded')); }
+  store.set('dg.favs', favs);
+  updateCounts();
+  if (S && !S.finished) $('#favBtn').classList.toggle('on', S.current && favs.includes(S.current.id));
+  if (S && S.finished) $('#stF').textContent = favs.filter(id => getItem(id)).length;
+}
+
+$('#btnFinish').onclick = () => confirmDialog(t('confirmFinish'), finishGame);
+
+/* =====================================================================
+   END
+   ===================================================================== */
+function finishGame() {
+  S.finished = true;
+  S.current = null;
+  S.msg = randomMsg();
+  saveState();
+  showScreen('end');
+  renderEnd(true);
+}
+function randomMsg() {
+  let i;
+  do { i = Math.floor(Math.random() * MESSAGES.length); } while (i === lastMsg && MESSAGES.length > 1);
+  lastMsg = i;
+  return i;
+}
+function renderEnd(celebrate) {
+  if (!S) return;
+  $('#couple').textContent = S.names[0] + ' ' + t('and') + ' ' + S.names[1];
+  const m = MESSAGES[S.msg || 0];
+  const isKk = lang === 'kk';
+  $('#msgText').textContent = isKk ? m[1] : m[0];
+  const author = isKk ? m[3] : m[2];
+  $('#msgAuthor').textContent = author ? '— ' + author : '';
+  $('#msgAuthor').hidden = !author;
+  $('#stQ').textContent = S.answered;
+  $('#stT').textContent = S.tasksDone;
+  $('#stF').textContent = favs.filter(id => getItem(id)).length;
+  if (celebrate) { hearts(); Sound.play('finish'); }
+}
+function hearts() {
+  const box = $('#floating');
+  box.innerHTML = '';
+  const sym = ['❤', '💕', '♥', '💗', '✨'];
+  for (let i = 0; i < 22; i++) {
+    const h = document.createElement('i');
+    h.textContent = pick(sym);
+    h.style.left = Math.random() * 100 + '%';
+    h.style.fontSize = (16 + Math.random() * 22) + 'px';
+    h.style.color = pick(['#d2506b', '#e58a4e', '#c9524a', '#f19aa8']);
+    h.style.animationDuration = (4 + Math.random() * 4) + 's';
+    h.style.animationDelay = (Math.random() * 2.5) + 's';
+    box.appendChild(h);
+  }
+}
+$('#btnAnother').onclick = () => {
+  S.msg = randomMsg();
+  saveState();
+  renderEnd(false);
+  Sound.play('message');
+  const m = $('#message');
+  m.classList.remove('swap'); void m.offsetWidth; m.classList.add('swap');
+};
+$('#btnNew').onclick = () => {
+  S = null;
+  saveState();
+  renderSetup();
+  showScreen('setup');
+};
+
+/* =====================================================================
+   SHEETS: favorites & custom questions
+   ===================================================================== */
+function openSheet(name) {
+  if (name === 'fav') renderFavs();
+  if (name === 'custom') renderCustom();
+  $('#sheet-' + name).classList.add('open');
+}
+$$('[data-open]').forEach(b => b.addEventListener('click', () => openSheet(b.dataset.open)));
+$$('.overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o || e.target.closest('[data-close]')) o.classList.remove('open'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { $$('.overlay.open').forEach(o => o.classList.remove('open')); $('#dialog').classList.remove('open'); }
+});
+
+function itemRow(item, btnClass, btnText, onClick) {
+  const row = document.createElement('div');
+  row.className = 'item';
+  row.dataset.cat = item.cat;
+  row.innerHTML = '<div class="txt"><span class="tag"></span><p></p></div><button type="button" class="icon-btn"></button>';
+  row.querySelector('.tag').textContent = tagFor(item);
+  row.querySelector('p').textContent = item[lang];
+  const b = row.querySelector('button');
+  b.className = 'icon-btn ' + btnClass;
+  b.textContent = btnText;
+  b.onclick = onClick;
+  return row;
+}
+
+function renderFavs() {
+  const list = $('#favList');
+  list.innerHTML = '';
+  const items = favs.map(getItem).filter(Boolean);
+  if (!items.length) { list.innerHTML = '<div class="empty"></div>'; list.firstChild.textContent = t('favEmpty'); return; }
+  items.forEach(item => list.appendChild(itemRow(item, 'heart', '♥', () => { toggleFav(item.id); renderFavs(); })));
+}
+
+function renderCustom() {
+  const cats = $('#customCats');
+  cats.innerHTML = '';
+  ['warm', 'deep', 'us'].forEach(cat => {
+    const c = document.createElement('button');
+    c.type = 'button';
+    c.className = 'chip' + (customCat === cat ? ' on' : '');
+    c.style.setProperty('--c', CAT_META[cat].color);
+    c.textContent = levelLabel(cat);
+    c.onclick = () => { customCat = cat; renderCustom(); };
+    cats.appendChild(c);
+  });
+  const list = $('#customList');
+  list.innerHTML = '';
+  if (!custom.length) { list.innerHTML = '<div class="empty"></div>'; list.firstChild.textContent = t('customEmpty'); return; }
+  custom.slice().reverse().forEach(c => {
+    const item = { id: c.id, cat: c.cat, ru: c.text, kk: c.text, custom: true };
+    list.appendChild(itemRow(item, '', '×', () => {
+      custom = custom.filter(x => x.id !== c.id);
+      favs = favs.filter(x => x !== c.id);
+      store.set('dg.custom', custom);
+      store.set('dg.favs', favs);
+      toast(t('removed'));
+      afterCustomChange();
+    }));
+  });
+}
+
+function afterCustomChange() {
+  renderCustom();
+  updateCounts();
+  if (S && !S.finished) {
+    if (S.current && S.current.id && !getItem(S.current.id)) { draw(); renderGame(true); dealIn(); }
+    else if (S.current && S.current.empty && remaining(S.level).length) { draw(); renderGame(true); dealIn(); }
+    else renderGame(false);
+  }
+}
+
+$('#btnAddCustom').onclick = () => {
+  const ta = $('#customText');
+  const text = ta.value.trim().replace(/\s+/g, ' ');
+  if (!text) { Sound.play('error'); ta.classList.remove('error'); void ta.offsetWidth; ta.classList.add('error'); ta.focus(); return; }
+  custom.push({ id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), text, cat: customCat });
+  store.set('dg.custom', custom);
+  ta.value = '';
+  ta.classList.remove('error');
+  Sound.play('add');
+  toast(t('added'));
+  afterCustomChange();
+};
+
+/* =====================================================================
+   LANGUAGE & INIT
+   ===================================================================== */
+$$('.lang button').forEach(b => b.addEventListener('click', () => {
+  lang = b.dataset.lang;
+  store.set('dg.lang', lang);
+  renderAll();
+}));
+
+document.addEventListener('click', e => {
+  if (e.target.closest('.chip, .level, .len, .tool, .lang button, .x, #btnStart, #btnResume, #btnNew, #btnFinish, [data-open], #dialogNo, #dialogYes, .icon-btn:not(.heart)')) Sound.play('tap');
+}, true);
+
+function renderSoundBtn() {
+  const b = $('#btnSound');
+  b.textContent = Sound.on ? '🔊' : '🔇';
+  b.classList.toggle('off', !Sound.on);
+}
+$('#btnSound').addEventListener('click', () => {
+  Sound.on = !Sound.on;
+  store.set('dg.sound', Sound.on);
+  renderSoundBtn();
+  Sound.play('tap');
+});
+
+(function init() {
+  renderSoundBtn();
+  const names = store.get('dg.names', null);
+  if (names) { $('#name1').value = names[0] || ''; $('#name2').value = names[1] || ''; }
+  if (S) { setupLevel = S.level || 'all'; if (!S.limit) S.limit = 300; }
+  applyI18n();
+  renderSetup();
+  updateCounts();
+  if (S && S.finished) { lastMsg = S.msg; showScreen('end'); renderEnd(false); }
+  else showScreen('setup');
+})();
+</script>
+</body>
+</html>
